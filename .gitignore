@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+install/
+log/
+*.egg-info/
+.pytest_cache/
+# Distributed intact through the vendor-assets-2026-09 release.
+D21_Controller*.7z

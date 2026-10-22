@@ -1,0 +1,30 @@
+{
+  "image": "media/images/d21-model-render.png",
+  "dimensions": [
+    1600,
+    700
+  ],
+  "purpose": "Repository hero for Artly Dex Hand; D21 first model",
+  "source": "Headless render of unchanged supplier URDF and STL geometry",
+  "models": [
+    {
+      "path": "simulation/D21_Left.urdf",
+      "sha256": "2604e8740a6008744c9ba5749f41f454dd41eadd78745b448d4bc839f64cca4f"
+    },
+    {
+      "path": "simulation/D21_Right.urdf",
+      "sha256": "afd600fc48e0d508774bf057a654fd82e7c7d44e68a8d2ad9096059e1c69904b"
+    }
+  ],
+  "pose": "All joint values zero; fixed bases. Left base shifted upward 0.05m for visual alignment of differing supplier model origins. Horizontal offsets only for composition.",
+  "rendering": "PyBullet DIRECT, TinyRenderer; neutral lighting and original model materials; no physics steps or hardware interfaces",
+  "dependencies": {
+    "pybullet": "3.2.7",
+    "numpy": "2.5.4",
+    "Pillow": "10.2.0"
+  },
+  "font": "DejaVu Sans",
+  "script": "tools/render_d21.py",
+  "output_sha256": "06ee655ee82a236ad9dc66f904aac8d7c11af71fc675fa730b21d77a760c2dce",
+  "limitations": "Source-model rendering, not a physical product photograph or performance evidence."
+}

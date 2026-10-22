@@ -1,0 +1,167 @@
+{
+  "checked_at_utc": "2026-10-22T01:30:22.619235+00:00",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "packages": {
+    "pyserial": "3.5",
+    "python-can": "4.6.1",
+    "mujoco": "3.16.0",
+    "pybullet": "3.2.7",
+    "numpy": "2.5.4"
+  },
+  "checks": [
+    {
+      "name": "import D21ModbusCore",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import d21_rs485",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import CANFDDevice",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import d21_canfd",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "pure core ",
+      "status": "pass",
+      "details": "CRC vector, 16 joint endpoint mappings/bounds, valid read and corrupt-CRC rejection"
+    },
+    {
+      "name": "import hand_control.D21ModbusCore",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import hand_control.d21_rs485",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import hand_control.CANFDDevice",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "import hand_control.d21_canfd",
+      "status": "pass",
+      "details": "no constructors called"
+    },
+    {
+      "name": "pure core hand_control.",
+      "status": "pass",
+      "details": "CRC vector, 16 joint endpoint mappings/bounds, valid read and corrupt-CRC rejection"
+    },
+    {
+      "name": "mock SLCAN configuration",
+      "status": "pass",
+      "details": "Serial factory mocked; vendor constructor arguments inspected without hardware"
+    },
+    {
+      "name": "MuJoCo Left",
+      "status": "pass",
+      "details": {
+        "nq": 21,
+        "nv": 21,
+        "njnt": 21,
+        "nu": 21,
+        "steps": 100,
+        "finite_state": true,
+        "warnings": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "PyBullet Left",
+      "status": "pass",
+      "details": {
+        "joints": 31,
+        "steps": 100,
+        "finite_state": true
+      }
+    },
+    {
+      "name": "MuJoCo Right",
+      "status": "pass",
+      "details": {
+        "nq": 21,
+        "nv": 21,
+        "njnt": 21,
+        "nu": 21,
+        "steps": 100,
+        "finite_state": true,
+        "warnings": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "PyBullet Right",
+      "status": "pass",
+      "details": {
+        "joints": 31,
+        "steps": 100,
+        "finite_state": true
+      }
+    }
+  ],
+  "known_supplier_defects": [
+    {
+      "module": "D21ModbusCore",
+      "write_response_accepts_wrong_function": true,
+      "five_byte_write_exception_result": ": Write response incomplete (expected 8 bytes, received 5)",
+      "qualification": "Recorded defects; passing pure checks do not qualify the transport."
+    },
+    {
+      "module": "hand_control.D21ModbusCore",
+      "write_response_accepts_wrong_function": true,
+      "five_byte_write_exception_result": ": Write response incomplete (expected 8 bytes, received 5)",
+      "qualification": "Recorded defects; passing pure checks do not qualify the transport."
+    },
+    {
+      "module": "CANFDDevice / python-can SLCAN",
+      "mock_configuration_commands": [
+        "C\r",
+        "S8\r",
+        "\r",
+        "O\r",
+        "O\r"
+      ],
+      "requested_2mbps_data_rate_not_configured": true,
+      "warnings": [
+        "The 'ttyBaudrate' argument is deprecated since python-can v4.5.0, and scheduled for removal in python-can v5.0.0. Use 'tty_baudrate' instead."
+      ],
+      "qualification": "Mocks only; verify adapter timing/firmware before hardware use."
+    }
+  ],
+  "scope": "No hardware connections, controller binaries, GUI examples, or ROS2 node launch.",
+  "status": "offline checks passed; known supplier defects recorded separately",
+  "not_validated": [
+    "physical D21 hand",
+    "RS485/CAN transport",
+    "ROS2 Jazzy build/launch",
+    "GUI examples",
+    "script couplings",
+    "simulation fidelity or contact performance"
+  ]
+}

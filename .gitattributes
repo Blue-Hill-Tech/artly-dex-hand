@@ -1,0 +1,7 @@
+# Preserve asset bytes and existing CRLF line endings.
+sdk/** -text
+simulation/** -text
+docs/reference/** -text
+media/images/** -text
+cad/*.stp binary
+*.stl binary

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>hand_control</name>
+  <version>0.0.1</version>
+  <description>ROS2 control for Artly_D21 hand over RS485</description>
+  <maintainer email="zouxixi@example.com">zouxixi</maintainer>
+  <license>Apache-2.0</license>
+
+  <!-- ========== 编译依赖 ========== -->
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <!-- ========== 运行时依赖 ========== -->
+  <!-- ROS2 核心 -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  
+  <!-- 机器人状态发布 -->
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+  
+  <!-- RViz2 可视化 -->
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>urdf_parser_plugin</exec_depend>
+  
+  <!-- Python 串口库 -->
+  <exec_depend>python3-serial</exec_depend>
+  
+  <!-- xacro (如果使用) -->
+  <exec_depend>xacro</exec_depend>
+
+  <!-- ========== 测试依赖 ========== -->
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <!-- ========== 导出 ========== -->
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

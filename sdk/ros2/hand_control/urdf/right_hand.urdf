@@ -1,0 +1,875 @@
+<?xml version="1.0"?>
+<robot name="Artly_D21_urdf">
+
+  <link name="world"/>
+
+  <link name="zhizuo">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/zhizuo.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="Aluminum alloy">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/zhizuo.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="0  0.012221 0.098250" rpy="0 0 0"/>
+      <mass
+        value="0.090261"/>
+      <inertia 
+        ixx="5.94503329e-05" ixy="2.70084323e-09" ixz="4.49550914e-10" 
+        iyy="6.12281839e-05" iyz="1.61860690e-07" izz="1.15520433e-04"/>
+    </inertial>   
+  </link>
+
+  <joint name="fixed_joint1" type="fixed">
+    <parent link="world"/>
+    <child link="zhizuo"/>
+    <origin xyz="0 0 0.05" rpy="3.14159 0 0"/>   <!-- 绕X轴旋转180° -->
+  </joint>
+
+  <link name="wrist">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/wrist.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="Aluminum alloy">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/wrist.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="0  0.012 0.0776746" rpy="0 0 0"/>
+      <mass
+        value="0.014567"/>
+      <inertia 
+        ixx="3.09769866e-06" ixy="1.22176136e-10" ixz="-1.13544800e-11" 
+        iyy="5.32185666e-06" iyz="-3.15475496e-11" izz="8.26121965e-06"/>
+    </inertial>   
+  </link>
+
+  <joint name="fixed_joint2" type="fixed">
+    <parent link="zhizuo"/>
+    <child link="wrist"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="palm_down">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/palm_down.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/palm_down.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.000308  0.00399 0.012841" rpy="0 0 0"/>
+      <mass
+        value="0.106662"/>
+      <inertia 
+        ixx="7.82390848e-05" ixy="1.72504656e-07" ixz="8.45368359e-07" 
+        iyy="1.23650437e-04" iyz="2.61846961e-06" izz="4.77996596e-05"/>
+    </inertial>   
+  </link>
+
+  <joint name="fixed_joint3" type="fixed">
+    <parent link="wrist"/>
+    <child link="palm_down"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="palm_up">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/palm_up.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/palm_up.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.000221  0.013877  0.0311585" rpy="0 0 0"/>
+      <mass
+        value="0.045"/>
+      <inertia 
+        ixx="3.36463288e-04" ixy="5.30128414e-06" ixz="7.33338632e-06" 
+        iyy="5.18382335e-04" iyz="-4.90180954e-06" izz="2.77030377e-04"/>
+    </inertial>   
+  </link>
+
+  <joint name="fixed_joint4" type="fixed">
+    <parent link="palm_down"/>
+    <child link="palm_up"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rubber">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/rubber.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/rubber.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.015972  0.0273366  0.0249793" rpy="0 0 0"/>
+      <mass
+        value="0.006547"/>
+      <inertia 
+        ixx="4.70592203e-06" ixy="3.68994111e-08" ixz="1.71833393e-06" 
+        iyy="7.63936640e-06" iyz="-5.44646819e-07" izz="3.45056259e-06"/>
+    </inertial>   
+  </link>
+
+  <joint name="fixed_joint5" type="fixed">
+    <parent link="palm_up"/>
+    <child link="rubber"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="thumb_pitch">
+    <inertial>
+      <origin xyz="0.00229406 -0.00020065  0.01350001" rpy="0 0 0"/>
+      <mass
+        value="0.00239"/>
+      <inertia 
+        ixx="8.44934033e-08" ixy="6.88679097e-10" ixz="3.30987873e-13" 
+        iyy="9.23108868e-08" iyz="2.49707866e-12" izz="2.41091744e-08"/>
+    </inertial>   
+  </link>
+
+  <joint name="thumb_joint1" type="revolute">
+    <parent link="palm_down"/>
+    <child link="thumb_pitch"/>
+    <origin xyz="0.0195 0.033 0.0316" rpy="0 0 0.08727"/>
+    <axis xyz="0 0 1"/> <!-- Rotates around the Z-axis -->
+    <limit lower="0" upper="1.7453" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="thumb_rotate">
+    <inertial>
+      <origin xyz="0.01637692 -0.00077104  0.00255739" rpy="0 0 0"/>
+      <mass
+        value="0.01299"/>
+      <inertia 
+        ixx="7.14083641e-07" ixy="-2.50538733e-08" ixz="-1.66156166e-07" 
+        iyy="8.63625850e-07" iyz="-4.47025184e-09" izz="7.14835815e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="thumb_joint2" type="revolute">
+    <parent link="thumb_pitch"/>
+    <child link="thumb_rotate"/>
+    <origin xyz="-0.0036 0 0.0135" rpy="0.1963 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="-0.6109" upper="0.6109" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="thumb_cmc">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_cmc.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_cmc.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="0.02179604 -0.01079993  0.01042554" rpy="0 0 0"/>
+      <mass
+        value="0.0761"/>
+      <inertia 
+        ixx="9.88330761e-06" ixy="-2.77395641e-10" ixz="2.95292609e-07" 
+        iyy="2.63186427e-05" iyz="1.12363131e-10" izz="2.55337454e-05"/>
+    </inertial>   
+  </link>
+
+  <joint name="thumb_joint3" type="revolute">
+    <parent link="thumb_rotate"/>
+    <child link="thumb_cmc"/>
+    <origin xyz="0.0179 0.0108 -0.004" rpy="0 0.4122 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="0" upper="0.8727" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="thumb_mcp">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_mcp.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_mcp.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="0.01398573 0.01080009 0.00628219" rpy="0 0 0"/>
+      <mass
+        value="0.007594"/>
+      <inertia 
+        ixx="4.33180354e-07" ixy="8.46126261e-12" ixz="-8.69534090e-09" 
+        iyy="8.00567310e-07" iyz="-4.50823419e-12" izz="7.80924642e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="thumb_joint4" type="revolute">
+    <parent link="thumb_cmc"/>
+    <child link="thumb_mcp"/>
+    <origin xyz="0.0489 -0.0216 0.00535" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="0" upper="1.2217" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="thumb_ip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_ip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/thumb_ip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="0.01591664 0.00670603 0.0001114" rpy="0 0 0"/>
+      <mass
+        value="0.010558"/>
+      <inertia 
+        ixx="4.23985284e-07" ixy="4.86900069e-11" ixz="6.24575750e-09" 
+        iyy="8.12276070e-07" iyz="2.74303701e-10" izz="7.89410880e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="thumb_joint5" type="revolute">
+    <parent link="thumb_mcp"/>
+    <child link="thumb_ip"/>
+    <origin xyz="0.028 0.0041 0.0065" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="0" upper="1.0472" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="thumb_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass
+        value="1e-4"/>
+      <inertia
+        ixx="1e-12" ixy="1e-12" ixz="1e-12"
+        iyy="1e-12" iyz="1e-12" izz="1e-12"/>
+    </inertial>  
+  </link>
+
+  <joint name="thumb_joint6" type="fixed">
+    <parent link="thumb_ip"/>
+    <child link="thumb_tip"/>
+    <origin xyz="0.028873 0.006702 -0.0051703" rpy="0 0 0"/>
+  </joint>
+
+  <link name="index_pitch">
+    <inertial>
+      <origin xyz="0 1.48528466e-03 0" rpy="0 0 0"/>
+      <mass
+        value="0.007137"/>
+      <inertia 
+        ixx="1.47044668e-07" ixy="-4.01871532e-14" ixz="-3.69810175e-14" 
+        iyy="1.29145694e-07" iyz="-3.53026889e-11" izz="1.95307637e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="index_joint1" type="revolute">
+    <parent link="palm_down"/>
+    <child link="index_pitch"/>
+    <origin xyz="0.02925 0.0003 -0.024" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="-0.3491" upper="0.3491" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="index_mcp">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_mcp.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_mcp.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00839998 -0.00087964 -0.02060176" rpy="0 0 0"/>
+      <mass
+        value="0.015555"/>
+      <inertia 
+        ixx="2.13575696e-06" ixy="-2.65055206e-12" ixz="4.53219766e-12" 
+        iyy="2.04612425e-06" iyz="-1.62960822e-08" izz="7.70642031e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="index_joint2" type="revolute">
+    <parent link="index_pitch"/>
+    <child link="index_mcp"/>
+    <origin xyz="0.0084 0.0062 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.57" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="index_pip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_pip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_pip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00570021  0.0009642  -0.01576151" rpy="0 0 0"/>
+      <mass
+        value="0.007362"/>
+      <inertia 
+        ixx="5.54181865e-07" ixy="-8.80929018e-12" ixz="-2.65570847e-12" 
+        iyy="5.55728775e-07" iyz="3.75680543e-08" izz="2.84047092e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="index_joint3" type="revolute">
+    <parent link="index_mcp"/>
+    <child link="index_pip"/>
+    <origin xyz="-0.0027 -0.0018 -0.043" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.745" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="index_dip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_dip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_dip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00699997 -0.00286834 -0.01126861" rpy="0 0 0"/>
+      <mass
+        value="0.007149"/>
+      <inertia 
+        ixx="3.76421520e-07" ixy="1.95582395e-12" ixz="7.05778613e-13" 
+        iyy="3.78958522e-07" iyz="1.68660313e-08" izz="1.99360792e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="index_joint4" type="revolute">
+    <parent link="index_pip"/>
+    <child link="index_dip"/>
+    <origin xyz="0.0013 0.0038 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.309" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="index_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass
+        value="1e-4"/>
+      <inertia
+        ixx="1e-12" ixy="1e-12" ixz="1e-12"
+        iyy="1e-12" iyz="1e-12" izz="1e-12"/>
+    </inertial>   
+  </link>
+
+  <joint name="index_joint5" type="fixed">
+    <parent link="index_dip"/>
+    <child link="index_tip"/>
+    <origin xyz="-0.007 0.0031524 -0.020231" rpy="0 0 0"/>
+  </joint>
+
+  <link name="middle_pitch">
+    <inertial>
+      <origin xyz="0 1.48528466e-03 0" rpy="0 0 0"/>
+      <mass
+        value="0.007137"/>
+      <inertia 
+        ixx="1.47044668e-07" ixy="-4.01871532e-14" ixz="-3.69810175e-14" 
+        iyy="1.29145694e-07" iyz="-3.53026889e-11" izz="1.95307637e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="middle_joint1" type="revolute">
+    <parent link="palm_down"/>
+    <child link="middle_pitch"/>
+    <origin xyz="0.00975 0.0003 -0.028" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="-0.3491" upper="0.3491" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="middle_mcp">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/middle_mcp.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/middle_mcp.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00839998 -0.00087964 -0.02060176" rpy="0 0 0"/>
+      <mass
+        value="0.015555"/>
+      <inertia 
+        ixx="2.13575696e-06" ixy="-2.65055206e-12" ixz="4.53219766e-12" 
+        iyy="2.04612425e-06" iyz="-1.62960822e-08" izz="7.70642031e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="middle_joint2" type="revolute">
+    <parent link="middle_pitch"/>
+    <child link="middle_mcp"/>
+    <origin xyz="0.0084 0.0062 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.57" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="middle_pip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/middle_pip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/middle_pip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00570021  0.0009642  -0.01576151" rpy="0 0 0"/>
+      <mass
+        value="0.007362"/>
+      <inertia 
+        ixx="5.54181865e-07" ixy="-8.80929018e-12" ixz="-2.65570847e-12" 
+        iyy="5.55728775e-07" iyz="3.75680543e-08" izz="2.84047092e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="middle_joint3" type="revolute">
+    <parent link="middle_mcp"/>
+    <child link="middle_pip"/>
+    <origin xyz="-0.0006 -0.0018 -0.043" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.745" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="middle_dip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/index_dip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/middle_dip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00699997 -0.00286834 -0.01126861" rpy="0 0 0"/>
+      <mass
+        value="0.007149"/>
+      <inertia 
+        ixx="3.76421520e-07" ixy="1.95582395e-12" ixz="7.05778613e-13" 
+        iyy="3.78958522e-07" iyz="1.68660313e-08" izz="1.99360792e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="middle_joint4" type="revolute">
+    <parent link="middle_pip"/>
+    <child link="middle_dip"/>
+    <origin xyz="-0.0008 0.0038 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.309" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="middle_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass
+        value="1e-4"/>
+      <inertia
+        ixx="1e-12" ixy="1e-12" ixz="1e-12"
+        iyy="1e-12" iyz="1e-12" izz="1e-12"/>
+    </inertial>   
+  </link>
+
+  <joint name="middle_joint5" type="fixed">
+    <parent link="middle_dip"/>
+    <child link="middle_tip"/>
+    <origin xyz="-0.007 0.0031524 -0.020231" rpy="0 0 0"/>
+  </joint>
+
+  <link name="ring_pitch">
+    <inertial>
+      <origin xyz="0 1.48528466e-03 0" rpy="0 0 0"/>
+      <mass
+        value="0.007137"/>
+      <inertia 
+        ixx="1.47044668e-07" ixy="-4.01871532e-14" ixz="-3.69810175e-14" 
+        iyy="1.29145694e-07" iyz="-3.53026889e-11" izz="1.95307637e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="ring_joint1" type="revolute">
+    <parent link="palm_down"/>
+    <child link="ring_pitch"/>
+    <origin xyz="-0.00975 0.0003 -0.025" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="-0.3491" upper="0.3491" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="ring_mcp">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_mcp.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_mcp.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00839998 -0.00087964 -0.02060176" rpy="0 0 0"/>
+      <mass
+        value="0.015555"/>
+      <inertia 
+        ixx="2.13575696e-06" ixy="-2.65055206e-12" ixz="4.53219766e-12" 
+        iyy="2.04612425e-06" iyz="-1.62960822e-08" izz="7.70642031e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="ring_joint2" type="revolute">
+    <parent link="ring_pitch"/>
+    <child link="ring_mcp"/>
+    <origin xyz="0.0084 0.0062 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.57" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="ring_pip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_pip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_pip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00570021  0.0009642  -0.01576151" rpy="0 0 0"/>
+      <mass
+        value="0.007362"/>
+      <inertia 
+        ixx="5.54181865e-07" ixy="-8.80929018e-12" ixz="-2.65570847e-12" 
+        iyy="5.55728775e-07" iyz="3.75680543e-08" izz="2.84047092e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="ring_joint3" type="revolute">
+    <parent link="ring_mcp"/>
+    <child link="ring_pip"/>
+    <origin xyz="-0.0006 -0.0018 -0.043" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.745" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="ring_dip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_dip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/ring_dip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00699997 -0.00286834 -0.01126861" rpy="0 0 0"/>
+      <mass
+        value="0.007149"/>
+      <inertia 
+        ixx="3.76421520e-07" ixy="1.95582395e-12" ixz="7.05778613e-13" 
+        iyy="3.78958522e-07" iyz="1.68660313e-08" izz="1.99360792e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="ring_joint4" type="revolute">
+    <parent link="ring_pip"/>
+    <child link="ring_dip"/>
+    <origin xyz="-0.0008 0.0038 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.309" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="ring_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass
+        value="1e-4"/>
+      <inertia
+        ixx="1e-12" ixy="1e-12" ixz="1e-12"
+        iyy="1e-12" iyz="1e-12" izz="1e-12"/>
+    </inertial>   
+  </link>
+
+  <joint name="ring_joint5" type="fixed">
+    <parent link="ring_dip"/>
+    <child link="ring_tip"/>
+    <origin xyz="-0.007 0.0031524 -0.020231" rpy="0 0 0"/>
+  </joint>
+
+  <link name="pinky_pitch">
+    <inertial>
+      <origin xyz="0 1.48528466e-03 0" rpy="0 0 0"/>
+      <mass
+        value="0.007137"/>
+      <inertia 
+        ixx="1.47044668e-07" ixy="-4.01871532e-14" ixz="-3.69810175e-14" 
+        iyy="1.29145694e-07" iyz="-3.53026889e-11" izz="1.95307637e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="pinky_joint1" type="revolute">
+    <parent link="palm_down"/>
+    <child link="pinky_pitch"/>
+    <origin xyz="-0.02925 0.0003 -0.021" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <!-- Rotates around the Y-axis -->
+    <limit lower="-0.3491" upper="0.3491" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="pinky_mcp">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_mcp.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_mcp.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00839998 -0.00087964 -0.02060176" rpy="0 0 0"/>
+      <mass
+        value="0.015555"/>
+      <inertia 
+        ixx="2.13575696e-06" ixy="-2.65055206e-12" ixz="4.53219766e-12" 
+        iyy="2.04612425e-06" iyz="-1.62960822e-08" izz="7.70642031e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="pinky_joint2" type="revolute">
+    <parent link="pinky_pitch"/>
+    <child link="pinky_mcp"/>
+    <origin xyz="0.0084 0.0062 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.57" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="pinky_pip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_pip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_pip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00570021  0.0009642  -0.01576151" rpy="0 0 0"/>
+      <mass
+        value="0.007362"/>
+      <inertia 
+        ixx="5.54181865e-07" ixy="-8.80929018e-12" ixz="-2.65570847e-12" 
+        iyy="5.55728775e-07" iyz="3.75680543e-08" izz="2.84047092e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="pinky_joint3" type="revolute">
+    <parent link="pinky_mcp"/>
+    <child link="pinky_pip"/>
+    <origin xyz="-0.0006 -0.0018 -0.043" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.745" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="pinky_dip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_dip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hand_control/right_hand_meshes/pinky_dip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision> -->
+    <inertial>
+      <origin xyz="-0.00699997 -0.00286834 -0.01126861" rpy="0 0 0"/>
+      <mass
+        value="0.007149"/>
+      <inertia 
+        ixx="3.76421520e-07" ixy="1.95582395e-12" ixz="7.05778613e-13" 
+        iyy="3.78958522e-07" iyz="1.68660313e-08" izz="1.99360792e-07"/>
+    </inertial>   
+  </link>
+
+  <joint name="pinky_joint4" type="revolute">
+    <parent link="pinky_pip"/>
+    <child link="pinky_dip"/>
+    <origin xyz="-0.0008 0.0038 -0.03" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/> <!-- Rotates around the X-axis -->
+    <limit lower="0" upper="1.309" effort="1" velocity="5"/>
+  </joint>
+
+  <link name="pinky_tip">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass
+        value="1e-4"/>
+      <inertia
+        ixx="1e-12" ixy="1e-12" ixz="1e-12"
+        iyy="1e-12" iyz="1e-12" izz="1e-12"/>
+    </inertial>   
+  </link>
+
+  <joint name="pinky_joint5" type="fixed">
+    <parent link="pinky_dip"/>
+    <child link="pinky_tip"/>
+    <origin xyz="-0.007 0.0031524 -0.020231" rpy="0 0 0"/>
+  </joint>
+
+</robot>

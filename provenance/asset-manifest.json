@@ -1,0 +1,793 @@
+{
+  "schema_version": 2,
+  "product": "Artly Dex Hand D21",
+  "scope": "Published engineering assets. Full original packages and source provenance are retained privately.",
+  "assets": [
+    {
+      "repository_path": "sdk/python/API.md",
+      "size_bytes": 10154,
+      "sha256": "a19b6762dd65cd9eb9328517c2bac6a1ac0e5a14e3d28d737bc136e61486c755",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/CANFDDevice.py",
+      "size_bytes": 4290,
+      "sha256": "a04585ba099a57c233eea8841140e00fe2c2332d8ea1c320fc31dd5d5ca9a4be",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/D21ModbusCore.py",
+      "size_bytes": 24127,
+      "sha256": "46f88d0bcebeadcfcc2ea9f5d324fbaffd647e372e2bfc93ca3076ae2f15fd9a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/README.md",
+      "size_bytes": 2130,
+      "sha256": "19b90f22c643b957bae53f411d509d754bee1564eca180d5151ccd164e2cf5f6",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/d21_canfd.py",
+      "size_bytes": 4393,
+      "sha256": "bca7144a3f382dcf24ea245c487e263ebc17188389b8a9de1e750441483af12d",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/d21_rs485.py",
+      "size_bytes": 2692,
+      "sha256": "8bdb0fafa2ce04b2c771efa95dc4eaf2aca1e682410ee0cb99ddaafc0aca5388",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/python/example.py",
+      "size_bytes": 2997,
+      "sha256": "2da41d1919e89d83327aaefdc04c15e635fdc5b2fbdd3233d962e59aaabcec53",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/LICENSE",
+      "size_bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/README.md",
+      "size_bytes": 12186,
+      "sha256": "16e145219e714e7a1795368935c0c00f741ed4da1147cebf188aa5d31c05034c",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/CANFDDevice.py",
+      "size_bytes": 4290,
+      "sha256": "a04585ba099a57c233eea8841140e00fe2c2332d8ea1c320fc31dd5d5ca9a4be",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/D21ModbusCore.py",
+      "size_bytes": 24256,
+      "sha256": "d626cd5b8b9463643337267484dc9acc310d2ca3f776c78f9f11d08abb8e0d53",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/d21_canfd.py",
+      "size_bytes": 4395,
+      "sha256": "c0397a193bc3a403c9487adfcffce7e8c7a28bdebb6e76cf35739f6438fa9b12",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/d21_rs485.py",
+      "size_bytes": 2693,
+      "sha256": "764b59747638ce38fef3abf28c439fccff45b724a582f6ec5a5e4e9c3dd1b1c5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/hand_control/hand_controller_node.py",
+      "size_bytes": 18905,
+      "sha256": "108dc7745c5da1dfdb82a540c7b02ee7f561a41184ea5a01358d79adfa599785",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/launch/hand_control.launch.py",
+      "size_bytes": 4708,
+      "sha256": "a86211d587b85d36ee4e866b045ec1db7de05ecb64de423a1b80d9a576665b48",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/index_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "11932cc764a453c6d821b2cf6babed34720259cb6e6c19d2098325f703725d6b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/index_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "5af8c770de1a68591b32d04a786a9e55a793e8639ee36f0102397ae745fc323a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/index_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "f6636c1bd5917829319a9a0fda362c01cd2731c572c061ba4655e1da01dc22fa",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/middle_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "25d732efd20bd07a52cb5f58f6b2dc4a4748f07df6ec44648725f7acaf0b676b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/middle_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "25a3290d93f40078aee7bd57f3141746bd4cff07feb59be8ee7e50ebe41d7df5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/middle_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "e9b6cb2863bf4f49ecea92491d50db3446205a27bf145a30f001ceaa984b89d9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/palm_down.stl",
+      "size_bytes": 260784,
+      "sha256": "46532a2b16a169e5663535fb54cd9b48cc20f9188cdd73a6b7e29bc4ad9b0d68",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/palm_up.stl",
+      "size_bytes": 368084,
+      "sha256": "08f437e3b43402f860d93ee82a5575c9d68f95ae9e85dd9873cb411ddedcce85",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/pinky_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "8e13b7266a4783d6497fe8a198b8e524524f9bbbf932c2db8ac98b983d97f78a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/pinky_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "7b9220295c93685e8f19e5fbcdd2b4c2636f5bdde6fb6f8f01496a4fbb502f1b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/pinky_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "4e492d9bfe822be9b6b2a54ad021f4b93031e78c9a3cb5bcfd9c40cd3c8fd989",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/ring_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "8475601607c1dc94421e141540ddb1576c259721865833e5d0eca71a33037d20",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/ring_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "6886d4ecb18f9333922602756634496f8217ebe77a815dbbb4aa6852ebaed783",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/ring_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "b62d3d88edd9a97fa75d5c5429e243ab21493c47ea4d58e032a2dd0e2ff2feb7",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/rubber.stl",
+      "size_bytes": 227684,
+      "sha256": "6d2745324fe94b2b4f13e0ad8cc069b1967db57348e79e9776d313d4ca32a65e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/thumb_cmc.stl",
+      "size_bytes": 756384,
+      "sha256": "2d35059aef751913e81855f3170f041200b14ff098d145bc7f2dbafec4f6f982",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/thumb_ip.stl",
+      "size_bytes": 213784,
+      "sha256": "63a775b7e54fb387adeee374db168a60bada388af3045390c1340a3e9a9da75a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/thumb_mcp.stl",
+      "size_bytes": 385184,
+      "sha256": "d659cae5e8f9fe4c43907414c42429d21501f0549e98a979e31c06cc74758c4a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/wrist.stl",
+      "size_bytes": 210884,
+      "sha256": "f471e21b09b2b8f63bd6b2a0498b31d6c219d4c813fb07fc88e11679676e1c9c",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/left_hand_meshes/zhizuo.stl",
+      "size_bytes": 186084,
+      "sha256": "801426d082c6a3670b3393ce40eacd324bdf99bf40eee73f1f8b335459a80fa5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/package.xml",
+      "size_bytes": 1574,
+      "sha256": "2d6685e56a2032dcfe407e80325a61a87f123a019d229eef80e27d1fe541c70a",
+      "treatment": "Artly D21 display metadata; behavior and model references unchanged"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/resource/hand_control",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/index_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "b5189cc097766eaefd25f3d29b1e172ea01714b12c0f3943bb8e09c3c51131a9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/index_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "d37cf8335cd2f6f42fa7e304fd2773b66d4f3499a4b17055411da19353fd4bd5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/index_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "bc4f3422d85f42cdada5185c137dbba41d019265fc2d083104af8728e37da9ac",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/index_pitch.stl",
+      "size_bytes": 92384,
+      "sha256": "b2da2e2e65d40f0fbb26655d3fe0d27a2e8cd4a5c846aa3c6777e0d334392d68",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/middle_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "272ae4a20d1c3792eb000ae0c947fc914a5aff2b40fef09314920aa7c484b816",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/middle_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "7ee6b2e0fffec8eddffe7f72dd300972db724591a28e3766b7a8d4e5a298882a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/middle_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "f87b61044fcf546a51dd99e3a6b0c6ee052ed9847f1701b23f61d1cb633ceba9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/middle_pitch.stl",
+      "size_bytes": 92384,
+      "sha256": "5e4c41b656436efb5daaf2b03223d8af729ca95dcbfeba82be541552afed3749",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/palm_down.stl",
+      "size_bytes": 260784,
+      "sha256": "3356a79a11dee86012225d3af8ac20717bbac1910efb5cb1b208ab9f4cc0c147",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/palm_up.stl",
+      "size_bytes": 368084,
+      "sha256": "0b73ab2ee22488fac676b3df0f9ef6e536c057d4aac9e3e0b89aa3417b253888",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/pinky_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "c51ef66d61a469f58e2832fdc7244377391b8b1365b3f3b7e632742326af6881",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/pinky_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "b19038fd396ed1c1bd4fca3fe0e58866d38d0976b2613fc979d8b7d9e7d4452c",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/pinky_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "2d12ed6f238b16eabf36784f6909453082a1653274707d4fa05f54861811cf7a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/pinky_pitch.stl",
+      "size_bytes": 92384,
+      "sha256": "cc9c4820eecc681eb3234c7c5b84bdd739d76b1d84fc5e96214413ae30603ec4",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/ring_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "b284fb8bda3f288cc634bb7c1a3c0140e8de61781e235381887d77e0b10f26e0",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/ring_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "295b0a5653d8501e91bd540e98e72d2b8d63b4379477dd3d4798d00a05fcf9ce",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/ring_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "2e1f95d6cbd9e31818f3d1bc8e057a8bb729b16b25b1ff63ef68749a20906c10",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/ring_pitch.stl",
+      "size_bytes": 92384,
+      "sha256": "6713a0a80c583d58954cde88a03b38e24f94db768111259e2897567e998d3332",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/rubber.stl",
+      "size_bytes": 210884,
+      "sha256": "1d447c6c58c62e3ca62b3824d805b589a3ee38710b89ca586c2c5f6b1fc0a1e2",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/thumb_cmc.stl",
+      "size_bytes": 756384,
+      "sha256": "8ac11da9ccbf0deab1dbce9d7dd147f2c45dd5f0d9c34ed2d8815bc2f0dad3b3",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/thumb_ip.stl",
+      "size_bytes": 213784,
+      "sha256": "49a847e2eb11c486206313429ab2a878e1bdbf2873d9d87802ae5b66b59ca24d",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/thumb_mcp.stl",
+      "size_bytes": 385184,
+      "sha256": "842e1fce4eb7d8fd418a3e6714057dc027d3e4de59a7009796b5bea2c2a1431e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/thumb_pitch.stl",
+      "size_bytes": 115084,
+      "sha256": "bcbc68814515d9b50b97a28aa454f539514d0c3d7852325b3eb4d5cccf4a1078",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/thumb_rotate.stl",
+      "size_bytes": 175984,
+      "sha256": "3e56348ef2277854d641946edc25461d0c485ea7a162d78f24bc9c03afc4d03e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/wrist.stl",
+      "size_bytes": 210884,
+      "sha256": "1d447c6c58c62e3ca62b3824d805b589a3ee38710b89ca586c2c5f6b1fc0a1e2",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/right_hand_meshes/zhizuo.stl",
+      "size_bytes": 186084,
+      "sha256": "07e9fd8fa72dcbf057a238fc358b47631cd3f3b91de16d2759b06d926ac0d8b8",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/rviz/hand.rviz",
+      "size_bytes": 1842,
+      "sha256": "5394bdd9ff07f3329d7b651b6d3f8ff4ee2ff85157c125cfe6f68267b7f0dae9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/setup.cfg",
+      "size_bytes": 93,
+      "sha256": "bed365c70416f67bfddba4afab9091e4d3d0ed61252f988acb85f312b40805fd",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/setup.py",
+      "size_bytes": 1372,
+      "sha256": "954b6d2bb07cce22188e399d4666fa4ae0161728e375669253540e385bec27df",
+      "treatment": "Artly D21 display metadata; behavior and model references unchanged"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/test/test_copyright.py",
+      "size_bytes": 962,
+      "sha256": "ea71bbbc6247b5c14d176ed09f39ee274d563cc9b2ec355828ea451ceff31757",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/test/test_flake8.py",
+      "size_bytes": 884,
+      "sha256": "37a813a0507f0ce51a2d0b57312d2cc078a0307a3ca85580ea801b0d2f9755d2",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/test/test_pep257.py",
+      "size_bytes": 803,
+      "sha256": "e8b88d49ee296987b1b40069f81019b5fa09b1aa1bfee9a1faae45bb5cf53eda",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/urdf/left_hand.urdf",
+      "size_bytes": 28577,
+      "sha256": "5dcba64f356fe0a7126cda865886119ddb4963864ca3b876a33a403289a51bc6",
+      "treatment": "Artly D21 display metadata; behavior and model references unchanged"
+    },
+    {
+      "repository_path": "sdk/ros2/hand_control/urdf/right_hand.urdf",
+      "size_bytes": 28809,
+      "sha256": "026a9babd004f7d86463d4210922f67ff8c1b18ff12645e1663ff0f9bad2f304",
+      "treatment": "Artly D21 display metadata; behavior and model references unchanged"
+    },
+    {
+      "repository_path": "cad/d21-hand.stp",
+      "size_bytes": 24089187,
+      "sha256": "02f06b216f4f3494eaedeef547a4d6f66285bfb3fe2375e1ae14db615f582f43",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "cad/realman-adapter.stp",
+      "size_bytes": 522186,
+      "sha256": "f26ad0e21917f9d7ed94d14ab43bc33bf8cf4e2ae36dbf93f15f37ae70aa8250",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/D21_Left.urdf",
+      "size_bytes": 27623,
+      "sha256": "2604e8740a6008744c9ba5749f41f454dd41eadd78745b448d4bc839f64cca4f",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/D21_Left.xml",
+      "size_bytes": 19774,
+      "sha256": "c8f8d5738555cea48ff1627ca12cf35287dcdf9fcca59a268f71cfee62749331",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/D21_Right.urdf",
+      "size_bytes": 27676,
+      "sha256": "afd600fc48e0d508774bf057a654fd82e7c7d44e68a8d2ad9096059e1c69904b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/D21_Right.xml",
+      "size_bytes": 20123,
+      "sha256": "e35dd428550cd0f7f8789221a2974b4723c0eb7323a7d3a7c62c18ed9d3b416e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/README.md",
+      "size_bytes": 1345,
+      "sha256": "54a07716934d68187d9efda915e95b6c354dc3d18e8a3e7a3f69ab8927e5d582",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/index_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "11932cc764a453c6d821b2cf6babed34720259cb6e6c19d2098325f703725d6b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/index_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "5af8c770de1a68591b32d04a786a9e55a793e8639ee36f0102397ae745fc323a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/index_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "f6636c1bd5917829319a9a0fda362c01cd2731c572c061ba4655e1da01dc22fa",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/middle_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "25d732efd20bd07a52cb5f58f6b2dc4a4748f07df6ec44648725f7acaf0b676b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/middle_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "25a3290d93f40078aee7bd57f3141746bd4cff07feb59be8ee7e50ebe41d7df5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/middle_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "e9b6cb2863bf4f49ecea92491d50db3446205a27bf145a30f001ceaa984b89d9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/palm_down.stl",
+      "size_bytes": 260784,
+      "sha256": "46532a2b16a169e5663535fb54cd9b48cc20f9188cdd73a6b7e29bc4ad9b0d68",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/palm_up.stl",
+      "size_bytes": 368084,
+      "sha256": "08f437e3b43402f860d93ee82a5575c9d68f95ae9e85dd9873cb411ddedcce85",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/pinky_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "8e13b7266a4783d6497fe8a198b8e524524f9bbbf932c2db8ac98b983d97f78a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/pinky_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "7b9220295c93685e8f19e5fbcdd2b4c2636f5bdde6fb6f8f01496a4fbb502f1b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/pinky_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "4e492d9bfe822be9b6b2a54ad021f4b93031e78c9a3cb5bcfd9c40cd3c8fd989",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/ring_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "8475601607c1dc94421e141540ddb1576c259721865833e5d0eca71a33037d20",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/ring_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "6886d4ecb18f9333922602756634496f8217ebe77a815dbbb4aa6852ebaed783",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/ring_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "b62d3d88edd9a97fa75d5c5429e243ab21493c47ea4d58e032a2dd0e2ff2feb7",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/rubber.stl",
+      "size_bytes": 227684,
+      "sha256": "6d2745324fe94b2b4f13e0ad8cc069b1967db57348e79e9776d313d4ca32a65e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/thumb_cmc.stl",
+      "size_bytes": 756384,
+      "sha256": "2d35059aef751913e81855f3170f041200b14ff098d145bc7f2dbafec4f6f982",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/thumb_ip.stl",
+      "size_bytes": 213784,
+      "sha256": "63a775b7e54fb387adeee374db168a60bada388af3045390c1340a3e9a9da75a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/thumb_mcp.stl",
+      "size_bytes": 385184,
+      "sha256": "d659cae5e8f9fe4c43907414c42429d21501f0549e98a979e31c06cc74758c4a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/wrist.stl",
+      "size_bytes": 210884,
+      "sha256": "f471e21b09b2b8f63bd6b2a0498b31d6c219d4c813fb07fc88e11679676e1c9c",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/left_hand_meshes/zhizuo.stl",
+      "size_bytes": 186084,
+      "sha256": "801426d082c6a3670b3393ce40eacd324bdf99bf40eee73f1f8b335459a80fa5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/mujoco_example.py",
+      "size_bytes": 3741,
+      "sha256": "8b3b8098824adc9257207afe2f83b61eb91474cf88e2366c0321962239b70c5e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/pybullet_example.py",
+      "size_bytes": 3525,
+      "sha256": "d15791f63807f31bfd96aab53e2c746de87fd1ce4c297154f0d7db9e35cceaae",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/index_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "b5189cc097766eaefd25f3d29b1e172ea01714b12c0f3943bb8e09c3c51131a9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/index_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "d37cf8335cd2f6f42fa7e304fd2773b66d4f3499a4b17055411da19353fd4bd5",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/index_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "bc4f3422d85f42cdada5185c137dbba41d019265fc2d083104af8728e37da9ac",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/middle_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "272ae4a20d1c3792eb000ae0c947fc914a5aff2b40fef09314920aa7c484b816",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/middle_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "7ee6b2e0fffec8eddffe7f72dd300972db724591a28e3766b7a8d4e5a298882a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/middle_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "f87b61044fcf546a51dd99e3a6b0c6ee052ed9847f1701b23f61d1cb633ceba9",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/palm_down.stl",
+      "size_bytes": 260784,
+      "sha256": "3356a79a11dee86012225d3af8ac20717bbac1910efb5cb1b208ab9f4cc0c147",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/palm_up.stl",
+      "size_bytes": 368084,
+      "sha256": "0b73ab2ee22488fac676b3df0f9ef6e536c057d4aac9e3e0b89aa3417b253888",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/pinky_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "c51ef66d61a469f58e2832fdc7244377391b8b1365b3f3b7e632742326af6881",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/pinky_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "b19038fd396ed1c1bd4fca3fe0e58866d38d0976b2613fc979d8b7d9e7d4452c",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/pinky_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "2d12ed6f238b16eabf36784f6909453082a1653274707d4fa05f54861811cf7a",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/ring_dip.stl",
+      "size_bytes": 249084,
+      "sha256": "b284fb8bda3f288cc634bb7c1a3c0140e8de61781e235381887d77e0b10f26e0",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/ring_mcp.stl",
+      "size_bytes": 390084,
+      "sha256": "295b0a5653d8501e91bd540e98e72d2b8d63b4379477dd3d4798d00a05fcf9ce",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/ring_pip.stl",
+      "size_bytes": 487784,
+      "sha256": "2e1f95d6cbd9e31818f3d1bc8e057a8bb729b16b25b1ff63ef68749a20906c10",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/rubber.stl",
+      "size_bytes": 210884,
+      "sha256": "1d447c6c58c62e3ca62b3824d805b589a3ee38710b89ca586c2c5f6b1fc0a1e2",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/thumb_cmc.stl",
+      "size_bytes": 756384,
+      "sha256": "8ac11da9ccbf0deab1dbce9d7dd147f2c45dd5f0d9c34ed2d8815bc2f0dad3b3",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/thumb_ip.stl",
+      "size_bytes": 213784,
+      "sha256": "49a847e2eb11c486206313429ab2a878e1bdbf2873d9d87802ae5b66b59ca24d",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/thumb_mcp.stl",
+      "size_bytes": 385184,
+      "sha256": "842e1fce4eb7d8fd418a3e6714057dc027d3e4de59a7009796b5bea2c2a1431e",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/wrist.stl",
+      "size_bytes": 210884,
+      "sha256": "1d447c6c58c62e3ca62b3824d805b589a3ee38710b89ca586c2c5f6b1fc0a1e2",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "simulation/right_hand_meshes/zhizuo.stl",
+      "size_bytes": 186084,
+      "sha256": "07e9fd8fa72dcbf057a238fc358b47631cd3f3b91de16d2759b06d926ac0d8b8",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "docs/reference/en/register-address-table.xlsx",
+      "size_bytes": 21761,
+      "sha256": "ce54c339ac7f2eddfa4c426ffaad3a1c5a00db6c56305588fa1835a18339a99b",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "docs/reference/zh/D21-0813.pdf",
+      "size_bytes": 251025,
+      "sha256": "93be5f9eed1cb1417b928a8cd81f1cfa1da97d248a4bafa9263e1b0f95598074",
+      "treatment": "Document metadata removed; page contents unchanged"
+    },
+    {
+      "repository_path": "docs/reference/zh/electrical-interface.pdf",
+      "size_bytes": 355227,
+      "sha256": "29f7e2f952e73c0f4ce790fb9f264455d565630e161627fab5eeeb36e80d48eb",
+      "treatment": "Document metadata removed; page contents unchanged"
+    },
+    {
+      "repository_path": "docs/reference/zh/mechanical-interface.pdf",
+      "size_bytes": 169380,
+      "sha256": "fd8b235e73f32f453ef21d697957255f9c471f071910fdb7d021554fec190798",
+      "treatment": "Document metadata removed; page contents unchanged"
+    },
+    {
+      "repository_path": "docs/reference/zh/register-address-table.xlsx",
+      "size_bytes": 21176,
+      "sha256": "140ecfba86ec5643238bd27dcdc8084b11e0b9df22b2239c36a61b7ebedbc8b0",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "media/images/IMG_9863.jpg",
+      "size_bytes": 1955299,
+      "sha256": "93e24b0a741f510798d55a41c2e4f335c3ce47cf4f617e2a89421901fc4e6816",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "media/images/IMG_9864.jpg",
+      "size_bytes": 1639058,
+      "sha256": "265cfe68c11935b0aaaf7a085fdf668729b516f38fcfbed2e75f596c7758efac",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "media/images/IMG_9865.jpg",
+      "size_bytes": 1804622,
+      "sha256": "96372d2ecba5e1f72bbb592fbf814ba058be6ef004e624d6ab3257021deda425",
+      "treatment": "Original asset bytes"
+    },
+    {
+      "repository_path": "media/images/d21-model-render.png",
+      "size_bytes": 147549,
+      "sha256": "06ee655ee82a236ad9dc66f904aac8d7c11af71fc675fa730b21d77a760c2dce",
+      "treatment": "Generated model render; see provenance/model-render.json"
+    },
+    {
+      "repository_path": "media/images/electrical-interface.jpg",
+      "size_bytes": 145754,
+      "sha256": "2c1c46cdf458dfe778fef58d54b8318cdfbdce25a999d6f8e475acb6750a0b60",
+      "treatment": "Original asset bytes"
+    }
+  ]
+}

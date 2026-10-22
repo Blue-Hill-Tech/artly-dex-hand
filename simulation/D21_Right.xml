@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="D21_right">
+    <compiler meshdir="right_hand_meshes/" balanceinertia="false" discardvisual="false"/>
+    <option timestep="0.0005" gravity="0 0 -9.81" integrator="implicit"/>
+
+    <default>
+        <joint armature="0.001" damping="0.01"/>
+        <geom rgba="0.8 0.8 0.8 1.0" condim="6" friction="1.0 0.1 0.01" solref="0.0005 1" solimp="0.95 0.99 0.001"/>
+    </default>
+
+    <worldbody>
+        <geom name="ground" type="plane" size="3 3 0.1" pos="0 0 -0.1" material="ground_mat" contype="1" conaffinity="1"/>
+
+        <light name="main_light" mode="fixed" pos="0 -1.5 1.8" dir="0 0.6 -0.8" diffuse="0.7 0.65 0.6"/>
+        <light name="fill_light" mode="fixed" pos="0.8 0.5 2.0" dir="-0.4 -0.2 -0.9" diffuse="0.4 0.35 0.3"/>
+        <light name="back_light" mode="fixed" pos="0 1.5 1.5" dir="0 -0.5 -0.8" diffuse="0.3 0.4 0.5"/>
+
+        <body name="zhizuo" pos="0 0 0.2" quat="0 1 0 0">  
+            <geom name="zhizuo_geom" type="mesh" mesh="zhizuo" mass="0.0903" material="metal" contype="0" conaffinity="0"/>
+
+            <body name="wrist" pos="0 0 0" quat="1 0 0 0">
+                <geom name="wrist_geom" type="mesh" mesh="wrist" mass="0.0146" material="metal" contype="0" conaffinity="0"/>
+
+                <body name="palm_down" pos="0 0 0" quat="1 0 0 0">
+                    <geom name="palm_down_geom" type="mesh" mesh="palm_down" mass="0.1067" material="skin" contype="0" conaffinity="0"/>
+
+                    <body name="palm_up" pos="0 0 0" quat="1 0 0 0">
+                        <geom name="palm_up_geom" type="mesh" mesh="palm_up" mass="0.045" material="skin" contype="1" conaffinity="1"/>
+
+                        <body name="rubber" pos="0 0 0" quat="1 0 0 0">
+                            <geom name="rubber_geom" type="mesh" mesh="rubber" mass="0.0065" material="skin" contype="0" conaffinity="0"/>
+
+                            <!-- ========== Thumb ========== -->
+                            <body name="thumb_pitch" pos="0.0195 0.033 0.0316" quat="0.99905 0 0 0.04363">
+                                <joint name="thumb_joint1" type="hinge" axis="0 0 1" range="0 1.7453" limited="false"/>
+                                <inertial pos="0.00229406 -0.00020065 -0.01350001" quat="1 0 0 0" mass="0.00239" diaginertia="8.449e-08 9.231e-08 2.411e-08"/>
+
+                                <body name="thumb_rotate" pos="-0.0036 0 0.0135" quat="0.9952 0.0981 0 0">
+                                    <joint name="thumb_joint2" type="hinge" axis="1 0 0" range="-0.6109 0.6109" limited="false"/>
+                                    <inertial pos="0.01637692 -0.00077104 -0.00255739" quat="1 0 0 0" mass="0.01299" diaginertia="7.141e-07 8.636e-07 7.148e-07"/>
+
+                                    <body name="thumb_cmc" pos="0.0179 0.0108 -0.004" quat="0.9790 0 0.2061 0">
+                                        <joint name="thumb_joint3" type="hinge" axis="0 1 0" range="0 0.8727" limited="false"/>
+                                        <geom name="thumb_cmc_geom" type="mesh" mesh="thumb_cmc" mass="0.0761" material="skin" contype="1" conaffinity="1"/>
+
+                                        <body name="thumb_mcp" pos="0.0489 -0.0216 0.00535" quat="1 0 0 0">
+                                            <joint name="thumb_joint4" type="hinge" axis="0 1 0" range="0 1.2217" limited="false"/>
+                                            <geom name="thumb_mcp_geom" type="mesh" mesh="thumb_mcp" mass="0.00759" material="skin" contype="1" conaffinity="1"/>
+
+                                            <body name="thumb_ip" pos="0.028 0.0041 0.0065" quat="1 0 0 0">
+                                                <joint name="thumb_joint5" type="hinge" axis="0 1 0" range="0 1.0472" limited="false"/>
+                                                <geom name="thumb_ip_geom" type="mesh" mesh="thumb_ip" mass="0.01056" material="nail" contype="1" conaffinity="1"/>
+                                                <geom name="thumb_tip_geom" type="sphere" size="0.0001" pos="0.028873 0.006702 -0.0051703" mass="0.0001" material="nail" contype="1" conaffinity="1"/>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+
+                            <!-- ========== Index ========== -->
+                            <body name="index_pitch" pos="0.02925 0.0003 -0.024" quat="1 0 0 0">
+                                <joint name="index_joint1" type="hinge" axis="0 1 0" range="-0.3491 0.3491" limited="false"/>
+                                <inertial pos="0 0.001485 0" quat="1 0 0 0" mass="0.007137" diaginertia="1.470e-07 1.291e-07 1.953e-07"/>
+
+                                <body name="index_mcp" pos="0.0084 0.0062 0" quat="1 0 0 0">
+                                    <joint name="index_joint2" type="hinge" axis="1 0 0" range="0 1.5708" limited="false"/>
+                                    <geom name="index_mcp_geom" type="mesh" mesh="index_mcp" mass="0.01555" material="skin" contype="1" conaffinity="1"/>
+
+                                    <body name="index_pip" pos="-0.0027 -0.0018 -0.043" quat="1 0 0 0">
+                                        <joint name="index_joint3" type="hinge" axis="1 0 0" range="0 1.7453" limited="false"/>
+                                        <geom name="index_pip_geom" type="mesh" mesh="index_pip" mass="0.00736" material="skin" contype="1" conaffinity="1"/>
+
+                                        <body name="index_dip" pos="0.0013 0.0038 -0.03" quat="1 0 0 0">
+                                            <joint name="index_joint4" type="hinge" axis="1 0 0" range="0 1.3090" limited="false"/>
+                                            <geom name="index_dip_geom" type="mesh" mesh="index_dip" mass="0.00715" material="nail" contype="1" conaffinity="1"/>
+                                            <geom name="index_tip_geom" type="sphere" size="0.0001" pos="-0.007 0.0031524 -0.020231" mass="0.0001" material="nail" contype="1" conaffinity="1"/>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+
+                            <!-- ========== Middle ========== -->
+                            <body name="middle_pitch" pos="0.00975 0.0003 -0.028" quat="1 0 0 0">
+                                <joint name="middle_joint1" type="hinge" axis="0 1 0" range="-0.3491 0.3491" limited="false"/>
+                                <inertial pos="0 0.001485 0" quat="1 0 0 0" mass="0.007137" diaginertia="1.470e-07 1.291e-07 1.953e-07"/>
+
+                                <body name="middle_mcp" pos="0.0084 0.0062 0" quat="1 0 0 0">
+                                    <joint name="middle_joint2" type="hinge" axis="1 0 0" range="0 1.5708" limited="false"/>
+                                    <geom name="middle_mcp_geom" type="mesh" mesh="middle_mcp" mass="0.01555" material="skin" contype="1" conaffinity="1"/>
+
+                                    <body name="middle_pip" pos="-0.0006 -0.0018 -0.043" quat="1 0 0 0">
+                                        <joint name="middle_joint3" type="hinge" axis="1 0 0" range="0 1.7453" limited="false"/>
+                                        <geom name="middle_pip_geom" type="mesh" mesh="middle_pip" mass="0.00736" material="skin" contype="1" conaffinity="1"/>
+
+                                        <body name="middle_dip" pos="-0.0008 0.0038 -0.03" quat="1 0 0 0">
+                                            <joint name="middle_joint4" type="hinge" axis="1 0 0" range="0 1.3090" limited="false"/>
+                                            <geom name="middle_dip_geom" type="mesh" mesh="middle_dip" mass="0.00715" material="nail" contype="1" conaffinity="1"/>
+                                            <geom name="middle_tip_geom" type="sphere" size="0.0001" pos="-0.007 0.0031524 -0.020231" mass="0.0001" material="nail" contype="1" conaffinity="1"/>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+
+                            <!-- ========== Ring ========== -->
+                            <body name="ring_pitch" pos="-0.00975 0.0003 -0.025" quat="1 0 0 0">
+                                <joint name="ring_joint1" type="hinge" axis="0 1 0" range="-0.3491 0.3491" limited="false"/>
+                                <inertial pos="0 0.001485 0" quat="1 0 0 0" mass="0.007137" diaginertia="1.470e-07 1.291e-07 1.953e-07"/>
+
+                                <body name="ring_mcp" pos="0.0084 0.0062 0" quat="1 0 0 0">
+                                    <joint name="ring_joint2" type="hinge" axis="1 0 0" range="0 1.5708" limited="false"/>
+                                    <geom name="ring_mcp_geom" type="mesh" mesh="ring_mcp" mass="0.01555" material="skin" contype="1" conaffinity="1"/>
+
+                                    <body name="ring_pip" pos="-0.0006 -0.0018 -0.043" quat="1 0 0 0">
+                                        <joint name="ring_joint3" type="hinge" axis="1 0 0" range="0 1.7453" limited="false"/>
+                                        <geom name="ring_pip_geom" type="mesh" mesh="ring_pip" mass="0.00736" material="skin" contype="1" conaffinity="1"/>
+
+                                        <body name="ring_dip" pos="-0.0008 0.0038 -0.03" quat="1 0 0 0">
+                                            <joint name="ring_joint4" type="hinge" axis="1 0 0" range="0 1.3090" limited="false"/>
+                                            <geom name="ring_dip_geom" type="mesh" mesh="ring_dip" mass="0.00715" material="nail" contype="1" conaffinity="1"/>
+                                            <geom name="ring_tip_geom" type="sphere" size="0.0001" pos="-0.007 0.0031524 -0.020231" mass="0.0001" material="nail" contype="1" conaffinity="1"/>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+
+                            <!-- ========== Pinky ========== -->
+                            <body name="pinky_pitch" pos="-0.02925 0.0003 -0.021" quat="1 0 0 0">
+                                <joint name="pinky_joint1" type="hinge" axis="0 1 0" range="-0.3491 0.3491" limited="false"/>
+                                <inertial pos="0 0.001485 0" quat="1 0 0 0" mass="0.007137" diaginertia="1.470e-07 1.291e-07 1.953e-07"/>
+
+                                <body name="pinky_mcp" pos="0.0084 0.0062 0" quat="1 0 0 0">
+                                    <joint name="pinky_joint2" type="hinge" axis="1 0 0" range="0 1.5708" limited="false"/>
+                                    <geom name="pinky_mcp_geom" type="mesh" mesh="pinky_mcp" mass="0.01555" material="skin" contype="1" conaffinity="1"/>
+
+                                    <body name="pinky_pip" pos="-0.0006 -0.0018 -0.043" quat="1 0 0 0">
+                                        <joint name="pinky_joint3" type="hinge" axis="1 0 0" range="0 1.7453" limited="false"/>
+                                        <geom name="pinky_pip_geom" type="mesh" mesh="pinky_pip" mass="0.00736" material="skin" contype="1" conaffinity="1"/>
+
+                                        <body name="pinky_dip" pos="-0.0008 0.0038 -0.03" quat="1 0 0 0">
+                                            <joint name="pinky_joint4" type="hinge" axis="1 0 0" range="0 1.3090" limited="false"/>
+                                            <geom name="pinky_dip_geom" type="mesh" mesh="pinky_dip" mass="0.00715" material="nail" contype="1" conaffinity="1"/>
+                                            <geom name="pinky_tip_geom" type="sphere" size="0.0001" pos="-0.007 0.0031524 -0.020231" mass="0.0001" material="nail" contype="1" conaffinity="1"/>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+
+                        </body> <!-- rubber -->
+                    </body> <!-- palm_up -->
+                </body> <!-- palm_down -->
+            </body> <!-- wrist -->
+        </body> <!-- zhizuo -->
+    </worldbody>
+
+    <contact>
+        <exclude body1="thumb_cmc" body2="palm_up"/>
+    </contact>
+
+    <asset>
+        <mesh name="zhizuo" file="zhizuo.stl" scale="1 1 1"/>
+        <mesh name="wrist" file="wrist.stl" scale="1 1 1"/>
+        <mesh name="palm_down" file="palm_down.stl" scale="1 1 1"/>
+        <mesh name="palm_up" file="palm_up.stl" scale="1 1 1"/>
+        <mesh name="rubber" file="rubber.stl" scale="1 1 1"/>
+
+        <mesh name="thumb_cmc" file="thumb_cmc.stl" scale="1 1 1"/>
+        <mesh name="thumb_mcp" file="thumb_mcp.stl" scale="1 1 1"/>
+        <mesh name="thumb_ip" file="thumb_ip.stl" scale="1 1 1"/>
+
+        <mesh name="index_mcp" file="index_mcp.stl" scale="1 1 1"/>
+        <mesh name="index_pip" file="index_pip.stl" scale="1 1 1"/>
+        <mesh name="index_dip" file="index_dip.stl" scale="1 1 1"/>
+
+        <mesh name="middle_mcp" file="middle_mcp.stl" scale="1 1 1"/>
+        <mesh name="middle_pip" file="middle_pip.stl" scale="1 1 1"/>
+        <mesh name="middle_dip" file="middle_dip.stl" scale="1 1 1"/>
+
+        <mesh name="ring_mcp" file="ring_mcp.stl" scale="1 1 1"/>
+        <mesh name="ring_pip" file="ring_pip.stl" scale="1 1 1"/>
+        <mesh name="ring_dip" file="ring_dip.stl" scale="1 1 1"/>
+
+        <mesh name="pinky_mcp" file="pinky_mcp.stl" scale="1 1 1"/>
+        <mesh name="pinky_pip" file="pinky_pip.stl" scale="1 1 1"/>
+        <mesh name="pinky_dip" file="pinky_dip.stl" scale="1 1 1"/>
+
+        <material name="skin" rgba="0.85 0.65 0.55 1" reflectance="0.3"/>
+        <material name="metal" rgba="0.45 0.5 0.55 1" reflectance="0.7"/>
+        <material name="nail" rgba="0.9 0.75 0.7 1" reflectance="0.5" emission="0.05"/>
+
+        <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.2 0.3 0.4" rgb2="0.3 0.4 0.5"/>
+        <material name="ground_mat" texture="grid" texrepeat="5 5" reflectance="0.2"/>
+    </asset>
+
+    <actuator>
+        <position name="thumb_joint1_act" joint="thumb_joint1" kp="2000" kv="20" ctrlrange="0 1.7453" forcerange="-10000 10000"/>
+        <position name="thumb_joint2_act" joint="thumb_joint2" kp="2000" kv="20" ctrlrange="-0.6109 0.6109" forcerange="-10000 10000"/>
+        <position name="thumb_joint3_act" joint="thumb_joint3" kp="2000" kv="20" ctrlrange="0 0.8727" forcerange="-10000 10000"/>
+        <position name="thumb_joint4_act" joint="thumb_joint4" kp="2000" kv="20" ctrlrange="0 1.2217" forcerange="-10000 10000"/>
+        <position name="thumb_joint5_act" joint="thumb_joint5" kp="2000" kv="20" ctrlrange="0 1.0472" forcerange="-10000 10000"/>
+
+        <position name="index_joint1_act" joint="index_joint1" kp="2000" kv="20" ctrlrange="-0.3491 0.3491" forcerange="-10000 10000"/>
+        <position name="index_joint2_act" joint="index_joint2" kp="2000" kv="20" ctrlrange="0 1.5708" forcerange="-10000 10000"/>
+        <position name="index_joint3_act" joint="index_joint3" kp="2000" kv="20" ctrlrange="0 1.7453" forcerange="-10000 10000"/>
+        <position name="index_joint4_act" joint="index_joint4" kp="2000" kv="20" ctrlrange="0 1.3090" forcerange="-10000 10000"/>
+
+        <position name="middle_joint1_act" joint="middle_joint1" kp="2000" kv="20" ctrlrange="-0.3491 0.3491" forcerange="-10000 10000"/>
+        <position name="middle_joint2_act" joint="middle_joint2" kp="2000" kv="20" ctrlrange="0 1.5708" forcerange="-10000 10000"/>
+        <position name="middle_joint3_act" joint="middle_joint3" kp="2000" kv="20" ctrlrange="0 1.7453" forcerange="-10000 10000"/>
+        <position name="middle_joint4_act" joint="middle_joint4" kp="2000" kv="20" ctrlrange="0 1.3090" forcerange="-10000 10000"/>
+
+        <position name="ring_joint1_act" joint="ring_joint1" kp="2000" kv="20" ctrlrange="-0.3491 0.3491" forcerange="-10000 10000"/>
+        <position name="ring_joint2_act" joint="ring_joint2" kp="2000" kv="20" ctrlrange="0 1.5708" forcerange="-10000 10000"/>
+        <position name="ring_joint3_act" joint="ring_joint3" kp="2000" kv="20" ctrlrange="0 1.7453" forcerange="-10000 10000"/>
+        <position name="ring_joint4_act" joint="ring_joint4" kp="2000" kv="20" ctrlrange="0 1.3090" forcerange="-10000 10000"/>
+
+        <position name="pinky_joint1_act" joint="pinky_joint1" kp="2000" kv="20" ctrlrange="-0.3491 0.3491" forcerange="-10000 10000"/>
+        <position name="pinky_joint2_act" joint="pinky_joint2" kp="2000" kv="20" ctrlrange="0 1.5708" forcerange="-10000 10000"/>
+        <position name="pinky_joint3_act" joint="pinky_joint3" kp="2000" kv="20" ctrlrange="0 1.7453" forcerange="-10000 10000"/>
+        <position name="pinky_joint4_act" joint="pinky_joint4" kp="2000" kv="20" ctrlrange="0 1.3090" forcerange="-10000 10000"/>
+    </actuator>
+
+    <sensor>
+        <jointpos name="thumb_joint1_pos" joint="thumb_joint1"/>
+        <jointvel name="thumb_joint1_vel" joint="thumb_joint1"/>
+        <jointpos name="thumb_joint2_pos" joint="thumb_joint2"/>
+        <jointvel name="thumb_joint2_vel" joint="thumb_joint2"/>
+        <jointpos name="thumb_joint3_pos" joint="thumb_joint3"/>
+        <jointvel name="thumb_joint3_vel" joint="thumb_joint3"/>
+        <jointpos name="thumb_joint4_pos" joint="thumb_joint4"/>
+        <jointvel name="thumb_joint4_vel" joint="thumb_joint4"/>
+        <jointpos name="thumb_joint5_pos" joint="thumb_joint5"/>
+        <jointvel name="thumb_joint5_vel" joint="thumb_joint5"/>
+
+        <jointpos name="index_joint1_pos" joint="index_joint1"/>
+        <jointvel name="index_joint1_vel" joint="index_joint1"/>
+        <jointpos name="index_joint2_pos" joint="index_joint2"/>
+        <jointvel name="index_joint2_vel" joint="index_joint2"/>
+        <jointpos name="index_joint3_pos" joint="index_joint3"/>
+        <jointvel name="index_joint3_vel" joint="index_joint3"/>
+        <jointpos name="index_joint4_pos" joint="index_joint4"/>
+        <jointvel name="index_joint4_vel" joint="index_joint4"/>
+
+        <jointpos name="middle_joint1_pos" joint="middle_joint1"/>
+        <jointvel name="middle_joint1_vel" joint="middle_joint1"/>
+        <jointpos name="middle_joint2_pos" joint="middle_joint2"/>
+        <jointvel name="middle_joint2_vel" joint="middle_joint2"/>
+        <jointpos name="middle_joint3_pos" joint="middle_joint3"/>
+        <jointvel name="middle_joint3_vel" joint="middle_joint3"/>
+        <jointpos name="middle_joint4_pos" joint="middle_joint4"/>
+        <jointvel name="middle_joint4_vel" joint="middle_joint4"/>
+
+        <jointpos name="ring_joint1_pos" joint="ring_joint1"/>
+        <jointvel name="ring_joint1_vel" joint="ring_joint1"/>
+        <jointpos name="ring_joint2_pos" joint="ring_joint2"/>
+        <jointvel name="ring_joint2_vel" joint="ring_joint2"/>
+        <jointpos name="ring_joint3_pos" joint="ring_joint3"/>
+        <jointvel name="ring_joint3_vel" joint="ring_joint3"/>
+        <jointpos name="ring_joint4_pos" joint="ring_joint4"/>
+        <jointvel name="ring_joint4_vel" joint="ring_joint4"/>
+
+        <jointpos name="pinky_joint1_pos" joint="pinky_joint1"/>
+        <jointvel name="pinky_joint1_vel" joint="pinky_joint1"/>
+        <jointpos name="pinky_joint2_pos" joint="pinky_joint2"/>
+        <jointvel name="pinky_joint2_vel" joint="pinky_joint2"/>
+        <jointpos name="pinky_joint3_pos" joint="pinky_joint3"/>
+        <jointvel name="pinky_joint3_vel" joint="pinky_joint3"/>
+        <jointpos name="pinky_joint4_pos" joint="pinky_joint4"/>
+        <jointvel name="pinky_joint4_vel" joint="pinky_joint4"/>
+    </sensor>
+</mujoco>
