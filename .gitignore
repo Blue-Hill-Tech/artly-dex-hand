@@ -8,3 +8,7 @@ log/
 .pytest_cache/
 # Distributed intact through the vendor-assets-2026-09 release.
 D21_Controller*.7z
+
+# The GUI's environments and build output (rebuild with ./setup_envs.sh)
+hand/.hand/
+retargetor/dex-retargetor-cpp/build/

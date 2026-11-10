@@ -1,0 +1,178 @@
+{
+    "name": "aac_d21_left",
+    "urdf_path": "./assets/ACC_left/D21_Left_geort.urdf",
+    "base_link": "geort_base",
+    "joint_order": [
+        "thumb_joint1",
+        "thumb_joint2",
+        "thumb_joint3",
+        "thumb_joint4",
+        "index_joint1",
+        "index_joint2",
+        "index_joint3",
+        "middle_joint1",
+        "middle_joint2",
+        "middle_joint3",
+        "ring_joint1",
+        "ring_joint2",
+        "ring_joint3",
+        "pinky_joint1",
+        "pinky_joint2",
+        "pinky_joint3"
+    ],
+    "coupled_joints": {
+        "thumb_joint5": [
+            "thumb_joint4",
+            0.85
+        ],
+        "index_joint4": [
+            "index_joint3",
+            0.8
+        ],
+        "middle_joint4": [
+            "middle_joint3",
+            0.8
+        ],
+        "ring_joint4": [
+            "ring_joint3",
+            0.8
+        ],
+        "pinky_joint4": [
+            "pinky_joint3",
+            0.8
+        ]
+    },
+    "fingertip_link": [
+        {
+            "name": "index",
+            "link": "index_tip",
+            "joint": [
+                "index_joint1",
+                "index_joint2",
+                "index_joint3"
+            ],
+            "center_offset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "human_hand_id": 8,
+            "base_link": "index_pitch",
+            "human_base_id": 5
+        },
+        {
+            "name": "middle",
+            "link": "middle_tip",
+            "joint": [
+                "middle_joint1",
+                "middle_joint2",
+                "middle_joint3"
+            ],
+            "center_offset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "human_hand_id": 12,
+            "base_link": "middle_pitch",
+            "human_base_id": 9
+        },
+        {
+            "name": "ring",
+            "link": "ring_tip",
+            "joint": [
+                "ring_joint1",
+                "ring_joint2",
+                "ring_joint3"
+            ],
+            "center_offset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "human_hand_id": 16,
+            "base_link": "ring_pitch",
+            "human_base_id": 13
+        },
+        {
+            "name": "pinky",
+            "link": "pinky_tip",
+            "joint": [
+                "pinky_joint1",
+                "pinky_joint2",
+                "pinky_joint3"
+            ],
+            "center_offset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "human_hand_id": 20,
+            "base_link": "pinky_pitch",
+            "human_base_id": 17
+        },
+        {
+            "name": "thumb",
+            "link": "thumb_tip",
+            "joint": [
+                "thumb_joint1",
+                "thumb_joint2",
+                "thumb_joint3",
+                "thumb_joint4"
+            ],
+            "center_offset": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "human_hand_id": 4
+        }
+    ],
+    "joint": {
+        "lower": [
+            0.0,
+            -0.6108999848365784,
+            0.0,
+            0.0,
+            -0.3490999937057495,
+            0.0,
+            0.0,
+            -0.3490999937057495,
+            0.0,
+            0.0,
+            -0.3490999937057495,
+            0.0,
+            0.0,
+            -0.3490999937057495,
+            0.0,
+            0.0
+        ],
+        "upper": [
+            1.745300054550171,
+            0.6108999848365784,
+            0.8726999759674072,
+            1.2216999530792236,
+            0.3490999937057495,
+            1.5700000524520874,
+            1.7450000047683716,
+            0.3490999937057495,
+            1.5700000524520874,
+            1.7450000047683716,
+            0.3490999937057495,
+            1.5700000524520874,
+            1.7450000047683716,
+            0.3490999937057495,
+            1.5700000524520874,
+            1.7450000047683716
+        ]
+    },
+    "training": {
+        "human_data": "manus_left_all.npy",
+        "epochs": 200,
+        "w_chamfer": 40.0,
+        "w_curvature": 0.1,
+        "w_collision": 0.0,
+        "w_pinch": 5.0,
+        "w_finger_dir": 2.0
+    }
+}

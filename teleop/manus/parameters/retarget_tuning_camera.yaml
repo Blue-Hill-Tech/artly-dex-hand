@@ -1,0 +1,126 @@
+# WEBCAM copy of retarget_tuning.yaml, used automatically by the sender with --source camera and no --retarget-config.
+# Only vector.row_scales differ: MediaPipe estimates hand proportions (camera middle MCP->tip 120 mm vs 101 mm from
+# the glove), so the glove's scales misfit. Finger rows = suggest_scales.py on camera log /tmp/manus_torque_22.jsonl;
+# thumb rows = the glove's hand-tuned values x (camera / glove tool ratio). Re-fit the finger rows: record a camera
+# session (open the hand fully, make a fist, move each finger), then
+#   hand/.hand/bin/python teleop/manus/tools/suggest_scales.py LOG --camera
+#
+# Tunable retargeting parameters for the MANUS -> AAC D21 solvers (teleop/manus/tools/dex_vector_retargeting.py).
+# This file is loaded by default; pass another with --retarget-config. Restart the sender after editing.
+# Weights are relative: raising one makes the solver favour that vector over the others.
+
+vector:                        # --method vector (default), --solver dex or dexrt
+  huber_delta_m: 0.02          # residual (m) where the loss turns from quadratic to linear (robustness to unreachable vectors)
+  norm_delta: 0.02            # pull toward the previous frame's joints (higher = smoother, laggier)
+  low_pass_alpha: 0.1          # --solver dex only: package low-pass on the joints (1.0 = off)
+  thumb_anchor: index_knuckle        # where the two thumb vectors start:
+                             #   base          each hand's own thumb base (glove CMC / robot thumb_pitch): the target is
+                             #                 the thumb's angle and shape from its base; it does not land on the glove tip
+                             #   index_knuckle both start at the index knuckle, which the hands share: the robot thumb tip
+                             #                 goes where the glove thumb tip is relative to the fingers
+                             #   middle_knuckle, ring_knuckle, pinky_knuckle  same, from that finger's knuckle
+                             #                 (middle sits nearest the knuckle centre; ring/pinky are furthest)
+  thumb_rotation_lock:       # --solver dexrt only; hold the thumb rotation joint (motor pair 1-2) at a fixed angle so
+                             # the thumb pad keeps facing the fingers; the other thumb joints place the tip.
+    enabled: true           # --thumb-rotation-lock DEG on the command line overrides the angle of the hand being run
+    angle_deg: 20.0          # -35..35, in the LEFT hand's convention (+ = pad toward the fingers); the code mirrors
+                             # it for the right hand, whose URDF thumb_joint2 turns the other way (it holds -angle_deg)
+    weight: 0.5              # how hard it is held against the position rows
+    left:                    # per-hand values; a key left out here takes the value above
+      angle_deg: 20.0
+      weight: 0.5
+    right:                   # same convention as the left (+ = pad toward the fingers; mirrored by the code). The right
+      angle_deg: 20.0        # glove's thumb targets pulled the lock 7 deg off at weight 0.05 (2026-11-03): raise the
+      weight: 0.1            # weight for a firmer hold, or adjust the angle by feel
+  row_scales:                # human -> robot length scale per vector, multiplied with --scale (1.0 = none).
+                             # Finger values from suggest_scales.py on /tmp/manus_vec_06.jsonl (robot reach / your
+                             # p99 length): the D21 fingers are all 93.8 mm knuckle->tip and 43 mm knuckle->PIP.
+                             # Thumb rows depend on thumb_anchor; record a new log and rerun the tool for them.
+    left:                    # the left hand (fit: suggest_scales.py LOG --write-side left)
+      thumb-tip: 1.28
+      index-tip: 1.06
+      middle-tip: 0.90
+      ring-tip: 0.98
+      pinky-tip: 1.20
+      thumb-mid: 1.43
+      index-mid: 1.30
+      middle-mid: 1.03
+      ring-mid: 1.28
+      pinky-mid: 1.55
+    right:                   # the right hand (fit: suggest_scales.py LOG --write-side right)
+      thumb-tip: 1.28
+      index-tip: 1.06
+      middle-tip: 0.90
+      ring-tip: 0.98
+      pinky-tip: 1.20
+      thumb-mid: 1.43
+      index-mid: 1.30
+      middle-mid: 1.03
+      ring-mid: 1.28
+      pinky-mid: 1.55
+  thumb_orientation:         # --solver dexrt only; match thumb link orientation to the glove thumb bone (0 = off).
+                             # The flags --thumb-orientation-weight / --thumb-tip-orientation-weight override these.
+                             # Reference: first live frame after A, so hold the thumb relaxed when aligning.
+    proximal: 0.0            # robot thumb_mcp link <- glove thumb proximal bone (fixes thumb roll). Try 5
+    distal: 1.0            # 0.3 working robot thumb_ip link  <- glove thumb distal bone. Try 3
+    proximal_amplify: 1.0    # multiply the glove bone's rotation since the reference (taken after A); 1 = off
+    distal_amplify: 1.00     # e.g. 1.5 if the robot thumb tip turns less than yours. Needs that weight > 0
+    roll_enabled: false     # fixed roll of the orientation target about the bone's own long axis, as if the glove
+                             # sensor were remounted turned by that angle (nail -> side of the thumb = about 90).
+                             # The robot link is asked to roll by it relative to the reference pose; needs that bone's
+                             # weight > 0. Sign: right-hand rule about base -> tip; try +90, then -90 if it goes the wrong way.
+    proximal_roll_deg: 0.0
+    distal_roll_deg: 150.0
+  mcp_soft_zero:             # --solver dexrt only; soft pull of each finger's knuckle (joint2) toward 0, weight 0 = off.
+                             # With the -mid rows off (MANUS infers the middle joint), this makes a fingertip bend go to
+                             # the middle joint (joint3) instead of the knuckle. It trades a little fingertip accuracy:
+                             # weight 1.0 = 10 deg of knuckle costs as much as 10 mm of tip error. Try 0.1 - 0.3.
+    index: 0.04
+    middle: 0.04
+    ring: 0.04
+    pinky: 0.04
+  pip_tip_rows:              # optional extra vector per finger: middle joint (PIP) -> fingertip; weight 0 = off.
+                             # It pins how the finger's curl is split between the middle and last joint.
+    index: {weight: 0.0, scale: 1.0}   # e.g. weight 1.0 to test it on the index
+    middle: {weight: 0.0, scale: 1.0}
+    ring: {weight: 0.0, scale: 1.0}
+    pinky: {weight: 0.0, scale: 1.0}
+  row_weights:               # --solver dexrt only; one weight per finger vector (base -> tip, base -> middle)
+    thumb-tip: 3.0
+    index-tip: 1.0
+    middle-tip: 1.0
+    ring-tip: 1.0
+    pinky-tip: 1.0
+    thumb-mid: 1.0
+    index-mid: 0.0
+    middle-mid: 0.0
+    ring-mid: 0.0
+    pinky-mid: 0.0
+
+glove:                         # corrections to the glove skeleton before any solver (all methods and solvers)
+  knuckle_slant_deg: null      # same in-plane alignment rotation as the glove file (see retarget_tuning.yaml): the
+                               # camera hand's own knuckle line is slanted like the glove model's, so the robot behaves
+                               # the same for the same hand from either source
+  thumb_tip_offset:            # move the glove's thumb tip point, e.g. from above the nail to the side that pinches
+    enabled: false             # true to apply it
+    toward_index_deg: 90.0      # BEND the thumb's last bone about its joint toward the index (+), up to 90 deg: the tip
+                               # swings sideways by about bone length x angle (30 mm x 15 deg = 8 mm). This is not a
+                               # sensor-mounting correction: rolling the sensor about the thumb (nail -> side) changes
+                               # nothing here, since the tip lies on that axis and orientation rows use relative turns.
+    toward_index_mm: 0.0       # then a sideways shift, toward your index knuckle (+) or away (-)
+    along_mm: 0.0              # along the thumb's last bone: + further out past the tip, - back toward the joint
+
+dexpilot:                      # --method dexpilot (needs --solver dexrt)
+  huber_delta_m: 0.03
+  norm_delta: 0.004
+  project_dist_m: 0.03         # a thumb-finger pair snaps to contact when the human pair is closer than this
+  escape_dist_m: 0.05          # and is released when it opens beyond this (hysteresis)
+  eta_primary_m: 0.0001        # contact distance for thumb-finger pairs
+  eta_secondary_m: 0.03        # contact distance for finger-finger pairs
+  projected_weight_primary: 200.0    # weight of a closed thumb-finger pair
+  projected_weight_secondary: 400.0  # weight of a closed finger-finger pair
+  weights:                     # open-hand weights
+    thumb_pairs: 1.0           # thumb tip <- each fingertip (4 vectors)
+    finger_pairs: 1.0          # fingertip <- fingertip (6 vectors)
+    finger_shape: 15.0         # knuckle -> fingertip of each finger (4 vectors): finger curl
+    thumb_proximal: 1.0        # thumb base -> thumb knuckle: thumb shape

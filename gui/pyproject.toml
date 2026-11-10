@@ -1,0 +1,5 @@
+[project]
+name = "AAC Hand Demo GUI"
+
+[tool.pyside6-project]
+files = ["main.py", "tools/demo_process.py", "tools/glove_hub.py", "tools/glove_worker.py", "tools/hand_view.py", "tools/main_window.py", "tools/motor_process.py", "tools/splash.py", "tools/tracking_link.py", "tools/tracking_service.py", "assets/AnthropicSerif-Display-MediumItalic-Static.otf", "assets/artly_logo.png"]

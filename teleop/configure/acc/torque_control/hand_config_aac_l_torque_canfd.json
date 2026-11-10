@@ -1,0 +1,126 @@
+{
+  "hand_roles": {
+    "AAC-001": {
+      "role": "LeftHand",
+      "serial_device": "/dev/serial/by-id/usb-ElmueSoft__netcult.ch_elmue__Slcan_2.5_-_Openlight_Labs_2072308653305009-if00",
+      "device_address": 1,
+      "bus": "canfd"
+    }
+  },
+  "aac_settings": {
+    "connection_timeout_s": 0.1,
+    "control_rate_hz": 500,
+    "feedback_rate_hz": 100,
+    "command_timeout_s": 0.5,
+    "finger_speeds_percent": [
+      30,
+      30,
+      30,
+      30,
+      30
+    ]
+  },
+  "transport": {
+    "zmq": {
+      "hand_stream_pull": "tcp://0.0.0.0:6300",
+      "hand_control_rep": "tcp://0.0.0.0:6301",
+      "hand_telem_pub": "tcp://0.0.0.0:6302"
+    }
+  },
+  "torque": {
+    "enabled": true,
+    "kp": 8.0,
+    "kd": 0.3,
+    "tau_max": 200.0,
+    "deadband_deg": 0.4,
+    "velocity_window_s": 0.01,
+    "firmware_velocity": false,
+    "stale_feedback_s": 0.0,
+    "pipeline": true,
+    "friction_table": "aac_breakaway_left.json",
+    "friction_scale": 0.4,
+    "friction_ramp_deg": 4.0,
+    "dither_ma": 30.0,
+    "dither_hz": 300.0,
+    "v_stick_dps": 20.0,
+    "joints": {
+      "middle_pip": {
+        "friction_scale": 0.1,
+        "friction_ff_scale": 0.15,
+        "kd": 0.5
+      },
+      "thumb_abduction": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.5
+      },
+      "thumb_rotation": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.7,
+        "kd": 0.6,
+        "dither_ma": 40.0
+      },
+      "thumb_cmc": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.7
+      },
+      "thumb_mcp": {
+        "friction_scale": 0.1,
+        "friction_ff_scale": 0.8
+      },
+      "index_abduction": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.0
+      },
+      "index_mcp": {
+        "friction_scale": 0.4,
+        "friction_ff_scale": 0.3
+      },
+      "index_pip": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.5,
+        "boost_ma": 360.0,
+        "boost_above_deg": 65.0,
+        "boost_max_s": 1.0,
+        "boost_cooldown_s": 0.2,
+        "boost_min_error_deg": 3.0
+      },
+      "middle_abduction": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.0
+      },
+      "middle_mcp": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.5
+      },
+      "ring_abduction": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.0
+      },
+      "ring_mcp": {
+        "friction_scale": 0.1,
+        "friction_ff_scale": 0.8
+      },
+      "ring_pip": {
+        "friction_scale": 0.4,
+        "friction_ff_scale": 0.3
+      },
+      "pinky_abduction": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.0
+      },
+      "pinky_mcp": {
+        "friction_scale": 0.2,
+        "friction_ff_scale": 0.5
+      },
+      "pinky_pip": {
+        "friction_scale": 0.1,
+        "friction_ff_scale": 0.7,
+        "kd": 0.5
+      }
+    },
+    "breakaway_fine": "aac_breakaway_left_fine.json",
+    "friction_ff_scale": 0.0,
+    "friction_ff_ramp_dps": 15.0,
+    "target_velocity_window_s": 0.15
+  }
+}

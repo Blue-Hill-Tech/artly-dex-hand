@@ -1,0 +1,11 @@
+{
+ "_about": "The GeoRT run each hand uses, per tracking source (\"glove\": the MANUS glove, \"camera\": every webcam tracker): a run folder name in left_hand/ or right_hand/; null = the newest run there. Edited by the GUI (Dev Mode, GeoRT models, Save) or by hand; read by teleop/manus/geort/checkpoints.py.",
+ "glove": {
+  "Left": null,
+  "Right": "aac_d21_right_2026-11-04_18-36-38_d21_right_4_w40_p5_d2"
+ },
+ "camera": {
+  "Left": null,
+  "Right": "aac_d21_right_2026-11-05_10-33-15_d21_right_5_w40_p5_d2"
+ }
+}

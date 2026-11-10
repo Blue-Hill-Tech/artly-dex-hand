@@ -1,0 +1,53 @@
+# Current-based admittance for the AAC D21 in position mode (teleop/hand_control/admittance.py).
+# Enabled from a hand config with  "admittance": {"enabled": true, "params": "admittance.yaml"}
+# Units are SI at the joint: N m, rad, A, s.
+#
+#   tau_ext = -gear_ratio * efficiency^(+-1) * kt_nm_per_a * (I_joint - I_free(q))
+#   M dd(off) + D d(off) + K off = deadband(EMA(tau_ext))
+#   q_cmd   = q_des + off
+#
+# Tune one joint first, in this order:
+#   K             stiffness felt at the finger. Steady push: off = -tau_ext / K.    0 = hand guiding
+#   M             lower = lighter and noisier
+#   D             null = damping_ratio * 2 sqrt(K M) (critical); raise D first if a joint chatters
+#   alpha         EMA weight on the torque estimate; higher = quicker but noisier (0.1 - 0.9)
+#   tau_db_nm     deadband; start from the calibration's hysteresis (hysteresis_a * kt_nm_per_a).
+#                 Too small: drifts in free space. Too large: ignores light touch.
+#   dq_max_rad    safety clamp on the offset
+#   offset_rate_max_rad_s  how fast the finger may yield; lower stops chatter against a grasped object
+# kt_nm_per_a: joint torque per amp of joint current. Bench estimate for the D21 fingers ~1 N m/A
+# (0.001 N m per mA, from the fingertip force calibration); re-fit with a known load if the stiffness
+# feels wrong. efficiency absorbs the gearing (0.7 - 0.9); if a push closed and a push open of the
+# same force give different |tau_ext|, adjust it.
+#
+# Calibration (I_free(q) polynomial + current sign per joint) is written by
+#   hand/.hand/bin/python retargetor/dex-retargetor-cpp/python/admittance_calibrate.py
+# into the file named below. Without it, I_free is the idle current sampled at startup and every
+# sign is +1: run the calibration before trusting the direction of the yield.
+admittance:
+  enabled: true
+  calibration: admittance_calibration.yaml
+  kt_nm_per_a: 1.5
+  gear_ratio: 1.0
+  efficiency: 1.0           # 0.8 made tau_ext jump 56% (eta vs 1/eta) each time the velocity sign flipped in
+                            # contact; that alone was most of the 1 Hz shake. Keep 1.0 unless push-in and
+                            # push-out forces measurably differ.
+  M: 0.06
+  D: null
+  damping_ratio: 3          # D = 3 * 2 sqrt(K M) = 2.5 N m s/rad. The loop ticks at ~17 ms (two blocking CAN
+                            # reads per tick, not 200 Hz), and the integrator needs dt * D / M < ~1: here 0.73.
+                            # Raising K or damping_ratio without raising M makes the offset buzz at 29 Hz.
+  K: 3.0                    # steady push: 0.3 N m -> 5.7 deg
+  alpha: 1.0                # EMA at the real ~58 Hz tick: lag = 17 ms / alpha = 57 ms. 0.03 was 0.57 s.
+  tau_db_nm: 0.05
+  eps_v_rad_s: 0.02
+  dq_max_rad: 0.5
+  offset_rate_max_rad_s: 3.0   # max speed of the offset (rad/s); null = unlimited
+  velocity_window_s: 0.1       # position feedback changes at 50 Hz; velocity is a difference over this window
+  max_dt_s: 0.1
+  target_motion_gate_dps: 10.0 # a glove target moving faster than this is a commanded move...
+  target_holdoff_s: 0.2        # ...whose motor current is not read as contact for this long (not in the paper)
+  joints:                      # optional per-joint overrides of any of the per-joint keys above
+    pinky_abduction: {tau_db_nm: 0.15}   # its current reads 3x noisier than the other joints
+    # thumb_rotation: {K: 1.0, tau_db_nm: 0.03}
+    # index_pip: {M: 0.004}
