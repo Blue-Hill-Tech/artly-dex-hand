@@ -115,12 +115,15 @@ build_dexrt() {
         return 0
     fi
     echo "== building $DEXRT (libdexrt.so)"
-    if cmake -S "$DEXRT" -B "$DEXRT/build" -DCMAKE_BUILD_TYPE=Release -DDEXRT_BUILD_TESTS=OFF -Wno-dev >/dev/null \
+    # Eigen: always the pinned copy the build downloads (cmake/Dependencies.cmake), never a system one: an Eigen CMake
+    # config without its headers (libeigen3-dev missing) otherwise fails with "Eigen/Core: No such file or directory"
+    if cmake -S "$DEXRT" -B "$DEXRT/build" -DCMAKE_BUILD_TYPE=Release -DDEXRT_BUILD_TESTS=OFF \
+            -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=TRUE -Wno-dev >/dev/null \
             && cmake --build "$DEXRT/build" -j "$(nproc 2>/dev/null || echo 2)" >/dev/null; then
         echo "== $DEXRT/build/libdexrt.so ready"
     else
         echo "== libdexrt.so build FAILED (output above): the motor cannot start in torque mode"
-        echo "   retry: cmake -S $DEXRT -B $DEXRT/build -DCMAKE_BUILD_TYPE=Release && cmake --build $DEXRT/build -j"
+        echo "   retry: cmake -S $DEXRT -B $DEXRT/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=TRUE && cmake --build $DEXRT/build -j"
     fi
 }
 
