@@ -1155,8 +1155,13 @@ class MainPage(QWidget):
             controls.warn(f"The {other.lower()} hand is using the same adapter: stop it first, or give each hand its "
                           "own adapter in Dev Mode.")
             return
+        again = None
+        if name == FRICTION:
+            again = self._ask_friction_checkpoint(side)
+            if again == "cancel":
+                return
         demo = DemoProcess(side, DEMO_KINDS[name], self, adapter=self.adapters[side], tip_stop=self.tip_stop,
-                           fine=self.friction_fine)
+                           fine=self.friction_fine, again=again)
         demo.output.connect(lambda line: print(line, flush=True))
         demo.stopped.connect(lambda code, side=side, demo=demo: self._demo_stopped(side, demo, code))
         self.demos[side] = demo
@@ -1166,11 +1171,14 @@ class MainPage(QWidget):
         if name == CALIBRATE:
             controls.notice(f"Calibrating the {side.lower()} hand for the torque demo (about 10 minutes). "
                             "Keep clear of the fingers; click again to stop.")
+        elif name == FRICTION and again == "resume":
+            controls.notice(f"Continuing the {side.lower()} hand's friction calibration where it stopped (progress in "
+                            "the terminal). Keep clear of the fingers; click again to stop (progress is kept).")
         elif name == FRICTION:
             controls.notice(f"Calibrating the {side.lower()} hand's friction for torque control"
                             + (" (FINE, Dev Mode: several hours for all joints)" if self.friction_fine else "")
                             + ": every joint, one at a time (this takes a long time; progress in the terminal). Keep "
-                            "clear of the fingers; click again to stop (the config is then left unchanged).")
+                            "clear of the fingers; click again to stop (progress is kept: you can continue later).")
         elif name == TORQUE_DEMO:
             controls.notice(("Torque demo with this hand's calibration. Click again to stop." if calibrated else
                              f"Torque demo without a calibration (click {CALIBRATE} first for a better one). "
@@ -1180,12 +1188,46 @@ class MainPage(QWidget):
             controls.notice(f"{name} running. Click again to stop.")
         controls.status.setText(f"{name} running on the {side.lower()} hand: click again to stop.")
 
+    def _ask_friction_checkpoint(self, side):
+        """A stopped friction calibration of this hand: "resume", "restart" or "cancel"; None when there is none."""
+        from demo_process import friction_checkpoint
+        saved = friction_checkpoint(side)
+        if saved is None:
+            return None
+        from PyQt5.QtWidgets import QMessageBox
+        box = QMessageBox(self)
+        box.setWindowTitle("Friction calibration")
+        box.setIcon(QMessageBox.Question)
+        box.setText(f"The {side.lower()} hand has a stopped friction calibration.")
+        box.setInformativeText(f"{saved}.\n\nContinue: carry on where it stopped, with its own settings (normal or "
+                               "fine as it was started; the Dev Mode choice does not change it).\nStart over: discard "
+                               "it and calibrate again from the first joint (joints already measured keep their "
+                               "results until measured again).")
+        resume = box.addButton("Continue", QMessageBox.AcceptRole)
+        restart = box.addButton("Start over", QMessageBox.DestructiveRole)
+        box.addButton("Cancel", QMessageBox.RejectRole)
+        box.setDefaultButton(resume)
+        box.exec_()
+        clicked = box.clickedButton()
+        return "resume" if clicked is resume else "restart" if clicked is restart else "cancel"
+
     def _demo_stopped(self, side, demo, code):
         if self.demos.get(side) is not demo:
             return
         controls = self.controls[side]
         controls.set_label(demo.label, demo.label)
         controls.set_active(demo.label, False)
+        if demo.kind == "friction" and code != 0:
+            from demo_process import friction_checkpoint
+            saved = friction_checkpoint(side)
+            if saved:
+                text = ("Friction calibration stopped" if demo.stop_requested else
+                        "Friction calibration ended with an error (see the terminal)")
+                controls.notice(f"{text}. Progress saved: {saved}. Click {FRICTION} to continue it.",
+                                error=not demo.stop_requested)
+                if not demo.stop_requested:
+                    self._adapter_ready(side)
+                return
         if code == 0 and demo.kind == "calibrate":
             controls.notice("Calibration done: the torque demo now uses it.")
         elif code == 0 and demo.kind == "friction":

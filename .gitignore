@@ -12,3 +12,7 @@ D21_Controller*.7z
 # The GUI's environments and build output (rebuild with ./setup_envs.sh)
 hand/.hand/
 retargetor/dex-retargetor-cpp/build/
+
+# friction calibration: a stopped run's checkpoint (friction_calibrate.py --resume)
+teleop/calibration/acc/friction/friction_checkpoint_*.json
+teleop/calibration/acc/friction/friction_checkpoint_*.tmp

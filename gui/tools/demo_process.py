@@ -39,17 +39,32 @@ def torque_demo_config(side):
     return f"demo/configure/{calibrated.name}" if calibrated.exists() else CONFIGS[side][0]
 
 
+def friction_checkpoint(side):
+    """The side's stopped friction calibration (friction_calibrate.py's checkpoint) as one line, or None."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "friction_calibrate", ROOT / "teleop" / "calibration" / "acc" / "friction" / "friction_calibrate.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    try:
+        ck = module.load_checkpoint(side.lower())
+    except SystemExit as exc:                          # unreadable: offered for Start over (Continue would fail)
+        return f"an unreadable checkpoint ({exc})"
+    return None if ck is None else f"{module.describe(ck)} (saved {ck.get('updated_at', '?')})"
+
+
 class DemoProcess(QObject):
     output = pyqtSignal(str)
     stopped = pyqtSignal(int)          # exit code
 
-    def __init__(self, side, kind, parent=None, adapter=None, tip_stop=True, fine=False):
+    def __init__(self, side, kind, parent=None, adapter=None, tip_stop=True, fine=False, again=None):
         super().__init__(parent)
         if kind not in DEMOS:
             raise ValueError(f"demo kind must be one of {sorted(DEMOS)}")
         self.side, self.kind, self.adapter = side, kind, adapter
         self.tip_stop = tip_stop                           # Dev Mode: the torque demo's fingertip-distance safety stop
         self.fine = fine                                   # Dev Mode: the friction calibration's fine mode (--fine)
+        self.again = again                                 # friction calibration: "resume" / "restart" a checkpoint
         self.label, self.running_label, self.noun = DEMOS[kind][1], DEMOS[kind][2], DEMOS[kind][3]
         self.stop_requested = False
         self.process = QProcess(self)
@@ -75,7 +90,9 @@ class DemoProcess(QObject):
             command += ["--loops", "0"]
         if self.kind in TIP_STOP_KINDS and not self.tip_stop:
             command.append("--no-tip-stop")
-        if self.kind == "friction" and self.fine:
+        if self.kind == "friction" and self.again in ("resume", "restart"):
+            command.append("--" + self.again)              # resume: the checkpoint's own settings (incl. fine)
+        if self.kind == "friction" and self.fine and self.again != "resume":
             command.append("--fine")
         return command
 
