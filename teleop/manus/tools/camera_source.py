@@ -468,7 +468,7 @@ class CameraSource:
         self.palm = {s: PalmStabilizer(**(palm or {})) for s in self.sides}
         # GeoRT maps fingertip POSITIONS and was trained on the glove's hand; MediaPipe's world hand is smaller, so a
         # flat hand's fingertips sat where the glove's are with the fingers curled. Every bone is resized to the
-        # glove hand's length along its measured direction; --camera-no-hand-fit turns it off.
+        # glove hand's length along its measured direction (as the WiLoR source does); --camera-no-hand-fit turns it off.
         self.bone_lengths = {s: glove_bone_lengths(s) for s in self.sides} if fit_to_glove else None
         # The user's flat hand as MediaPipe sees it (FlatPose), captured by capture_flat(); --camera-no-flat-pose: off
         self.flat = {s: FlatPose.load(s) for s in self.sides} if flat_pose else None

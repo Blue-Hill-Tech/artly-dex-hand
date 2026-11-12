@@ -32,9 +32,9 @@ if str(ROOT) not in sys.path:
 ALIGNMENT = ROOT / "teleop" / "manus" / "alignment" / "aac_alignment_{side}{suffix}.json"   # suffix "_camera" for the camera
 CAMERA_TUNING = ROOT / "teleop" / "manus" / "parameters" / "retarget_tuning_camera.yaml"
 CAMERA_CAPTURE_FRAMES = 15   # the sender's alignment capture for the camera (~30 fps), instead of the glove's 30
-MODES = ("glove", "camera")
-CAMERA_MODES = ("camera",)   # the webcam (MediaPipe): camera settings, own alignment file, align()
-ALIGNMENT_SUFFIX = {"glove": "", "camera": "_camera"}
+MODES = ("glove", "camera", "wilor", "wilor_mini")
+CAMERA_MODES = ("camera", "wilor", "wilor_mini")   # webcam trackers: camera settings, own alignment file, align()
+ALIGNMENT_SUFFIX = {"glove": "", "camera": "_camera", "wilor": "_wilor", "wilor_mini": "_wilor_mini"}
 POSE_HZ = 60              # model updates sent to the GUI (the glove runs ~60-120 Hz)
 STATUS_HZ = 4
 SEND_RATE_HZ = 100        # target submissions to the controller (the sender's --send-rate)
@@ -136,6 +136,9 @@ class GloveWorker(QThread):
         elif self.mode == "camera":
             from teleop.manus.tools.camera_source import load_camera_source
             source = load_camera_source(SimpleNamespace(), [self.side])
+        elif self.mode in ("wilor", "wilor_mini"):
+            from teleop.manus.wilor.wilor_source import load_wilor_source
+            source = load_wilor_source([self.side], tracker=self.mode)
         else:
             source = load_source()
         reported_alignment = None

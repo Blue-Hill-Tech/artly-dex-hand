@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]             # agi-os (this file: teleop/manus/geort/)
 GEORT_CHECKPOINTS = ROOT / 'retargetor' / 'GeoRT_checkpoint'
 SELECTION_FILE = GEORT_CHECKPOINTS / 'selection.json'
-CAMERA_SOURCES = ('camera',)                           # the webcam (MediaPipe) uses the "camera" pin
+CAMERA_SOURCES = ('camera', 'wilor', 'wilor_mini')      # webcam trackers share the "camera" pin
 SOURCES = ('glove', 'camera')                           # the pin groups: the MANUS glove, every webcam tracker
 SIDES = ('Left', 'Right')
 HAND_FOLDERS = {'Left': 'left_hand', 'Right': 'right_hand'}

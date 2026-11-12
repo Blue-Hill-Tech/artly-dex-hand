@@ -1,5 +1,5 @@
 {
- "_about": "Bone lengths (mm) of the MANUS glove hand that the GeoRT checkpoints were trained on: medians over the GeoRT training recordings (GeoRT/data/manus_<side>_NN.npy, 21 MediaPipe-order keypoints). Keys are 'parent-child' MediaPipe indices (0 wrist; 1-4 thumb; 5-8 index; 9-12 middle; 13-16 ring; 17-20 pinky). The camera source (MediaPipe) resizes every bone of the tracked hand to these, keeping its direction, so GeoRT sees the hand size it was trained on. Measured 2026-11-06.",
+ "_about": "Bone lengths (mm) of the MANUS glove hand that the GeoRT checkpoints were trained on: medians over the GeoRT training recordings (GeoRT/data/manus_<side>_NN.npy, 21 MediaPipe-order keypoints). Keys are 'parent-child' MediaPipe indices (0 wrist; 1-4 thumb; 5-8 index; 9-12 middle; 13-16 ring; 17-20 pinky). The camera sources (MediaPipe, WiLoR) resize every bone of the tracked hand to these, keeping its direction, so GeoRT sees the hand size it was trained on. Measured 2026-11-06.",
  "Left": {
   "frames": 12216,
   "files": [

@@ -74,18 +74,26 @@ GHOST_FADE_MS = 400               # the hand turning see-through / solid when it
 NOTE_STYLE = "font-size: 20px; color: #8A8472;"
 NOTE_WIDTH_PX = 420
 HINT_STYLE = "font-size: 14px; color: #8A8472;"
-# Tracking mode shown in the mode bar: the MANUS glove or the webcam. The camera mode tracks the hand with MediaPipe
-# (teleop/manus/tools/camera_source.py), the only camera pipeline in this repo.
+# Tracking mode shown in the mode bar: the MANUS glove or the webcam. Which tracker the camera mode runs is a Dev Mode
+# choice (top right, remembered): MediaPipe, or WiLoR (a MANO hand fit on the GPU, teleop/manus/wilor/wilor_source.py).
 MODES = {"glove": "Glove", "camera": "Camera"}
-PIPELINES = {"mediapipe": "MediaPipe"}
-PIPELINE_SOURCE = {"mediapipe": "camera"}   # what the hub runs
+PIPELINES = {"mediapipe": "MediaPipe", "wilor": "WiLoR", "wilor_mini": "WiLoR-mini"}
+PIPELINE_SOURCE = {"mediapipe": "camera", "wilor": "wilor", "wilor_mini": "wilor_mini"}   # what the hub runs
 SETTINGS = ("artly.ai", "AAC Hand Demo")       # QSettings organisation / application (kept: the saved choices live here)
-# Per source (what the hub and the glove workers run: "glove", "camera" = MediaPipe): the note while
+# Per source (what the hub and the glove workers run: "glove", "camera" = MediaPipe, "wilor"): the note while
 # searching, the note when nothing is found, connect / disconnect labels.
 SOURCE_TEXT = {
     "glove": dict(searching="Searching for the {side} glove ...",
                   missing="No {side} glove found.\nPlease connect the {side} MANUS glove.",
                   failed="Glove search failed: {error}", connect="Connect to glove", disconnect="Disconnect glove"),
+    "wilor": dict(searching="Starting the camera (WiLoR: loading the model) ...",
+                  missing="No {side} hand in view.\nShow your {side} hand to the camera.",
+                  failed="Camera (WiLoR) failed: {error}", connect="Connect to camera", disconnect="Disconnect camera"),
+    "wilor_mini": dict(searching="Starting the camera (WiLoR-mini: loading the model; the first start also downloads "
+                                 "it, a few minutes) ...",
+                       missing="No {side} hand in view.\nShow your {side} hand to the camera.",
+                       failed="Camera (WiLoR-mini) failed: {error}", connect="Connect to camera",
+                       disconnect="Disconnect camera"),
     "camera": dict(searching="Starting the camera ...",
                    missing="No {side} hand in view.\nShow your {side} hand to the camera.",
                    failed="Camera failed: {error}", connect="Connect to camera", disconnect="Disconnect camera"),
@@ -663,7 +671,7 @@ class MainPage(QWidget):
 
     @property
     def source(self):
-        """What the service runs: "glove" or "camera" (MediaPipe)."""
+        """What the service runs: "glove", "camera" (MediaPipe), "wilor" or "wilor_mini"."""
         if self.mode == "glove":
             return "glove"
         return PIPELINE_SOURCE[self.pipeline]

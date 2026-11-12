@@ -6,7 +6,9 @@ frames that are new for that reader, metadata() passes through). `gloves` tells 
 counts as found while the MANUS landscape lists it and its frames keep arriving.
 
 mode "camera": the webcam hand tracker (teleop/manus/tools/camera_source.py, both sides, told apart by MediaPipe's hand
-labels) in place of the SDK; a side counts as found while its hand is tracked. `connected` says when the source is up.
+labels) in place of the SDK; a side counts as found while its hand is tracked. mode "wilor" / "wilor_mini": the WiLoR
+service (teleop/manus/wilor/wilor_source.py) with WiLoR's code or the WiLoR-mini package; its model takes a while to load,
+`connected` says when it is up.
 """
 import sys
 import threading
@@ -80,7 +82,7 @@ class GloveHub(QThread):
         self._stop.set()
         starting = self._starting
         if starting is not None and isinstance(getattr(starting, "stop", None), threading.Event):
-            starting.stop.set()                          # a source still connecting gives up
+            starting.stop.set()                          # a source still connecting (WiLoR loading) gives up
 
     def view(self):
         return HubView(self)
@@ -107,6 +109,9 @@ class GloveHub(QThread):
         if self.mode == "camera":
             from teleop.manus.tools.camera_source import load_camera_source
             source = load_camera_source(SimpleNamespace(), list(SIDES))   # no SDK: init / shut down do nothing
+        elif self.mode in ("wilor", "wilor_mini"):
+            from teleop.manus.wilor.wilor_source import load_wilor_source
+            source = load_wilor_source(list(SIDES), tracker=self.mode)
         else:
             from teleop.manus.tools.skeleton_source import load_source
             source = load_source()

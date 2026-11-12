@@ -1,7 +1,6 @@
 """The Dev Mode page: developer settings, opened from the Dev Mode button at the main page's top right.
 
-- Camera pipeline: which tracker the camera mode runs (shown only when there is more than one; this repo has
-  MediaPipe only).
+- Camera pipeline: which tracker the camera mode runs (MediaPipe, WiLoR, WiLoR-mini).
 - GeoRT models: the trained run per hand and tracking source (glove / camera), from that hand's folder
   (retargetor/GeoRT_checkpoint/left_hand or right_hand), or the newest one there; a choice applies at once (the tracking restarts) for this run, Save writes it to selection.json.
 - Motor gains: each hand's teleop torque kp / kd (the motor started with Start Left / Start Right), from the next motor start;

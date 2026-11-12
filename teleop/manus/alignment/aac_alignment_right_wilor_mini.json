@@ -1,0 +1,44 @@
+{
+  "schema": "manus-aac-alignment-v2",
+  "mapping_schema": "manus-aac-dex-vector-v2",
+  "method": "vector",
+  "side": "Right",
+  "glove_id": 3394113538,
+  "dex_retargeting_version": "0.5.0",
+  "scaling_factor": 1.0,
+  "robot_model": {
+    "path_relative_to_repo": "hand/aac/description/D21_Right.urdf",
+    "sha256": "9ad76cd0c99f8ecb2920bf61b02cd2d8658c0c3fb2d759bacc6444318fa96a5b"
+  },
+  "alignment": {
+    "convention": "Column vectors: v_aac_palm = A @ v_manus_palm; C = R_root_from_aac_palm @ A",
+    "A": [
+      [
+        0.11387222551798663,
+        -0.9934837893595219,
+        0.004803804266009746
+      ],
+      [
+        0.043552039929410605,
+        0.009822386717185985,
+        0.9990028731375928
+      ],
+      [
+        -0.9925403448089997,
+        -0.11354946498783423,
+        0.04438674269879231
+      ]
+    ]
+  },
+  "source": {
+    "captured_unix_s": 1794007504.8569057,
+    "alignment_event_monotonic_s": 348350.430258995,
+    "capture_frame_count": 21,
+    "capture_span_s": 0.9078356983372942,
+    "motion_m": 0.0030512498612468974,
+    "motion_deg": 2.430066797728079,
+    "knuckle_slant_deg": 3.110824283305232,
+    "knuckle_slant_raw_deg": 3.110824283305232,
+    "knuckle_slant_target_deg": null
+  }
+}

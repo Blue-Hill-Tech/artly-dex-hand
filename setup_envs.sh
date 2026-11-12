@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# Build the virtual environment of this repo from its pinned package list:
+# Build the virtual environments of this repo from their pinned package lists:
 #   hand/.hand             Python 3.12  teleop, GUI, demos                  (hand/requirements.txt)
+#   WiLoR/.venv            Python 3.10  WiLoR hand tracking, CUDA torch    (requirements-wilor.txt + two git packages);
+#                                       optional: only for the camera mode's WiLoR / WiLoR-mini pipelines (Dev Mode)
 #
 #   ./setup_envs.sh            the environment, the C++ library, the system setup and the launcher (= hand)
 #   ./setup_envs.sh hand       the same
+#   ./setup_envs.sh wilor      only WiLoR/.venv (about 7 GB) and the WiLoR weights (2.7 GB); all = hand + wilor
 #   ./setup_envs.sh launcher   only the GUI's app-menu / desktop icon: name "Artly-os" and gui/assets/aac_hand_icon.png
 #                              (also done by hand); old entries are removed, a changed picture shows at once
-#   ./setup_envs.sh --recreate [hand]   delete the venv and rebuild
+#   ./setup_envs.sh --recreate [hand|wilor]   delete the venv(s) and rebuild
 #
-# Needs uv (https://docs.astral.sh/uv/): it downloads the Python version if it is missing. The camera mode tracks the
-# hand with MediaPipe (teleop/manus/hand_landmarker.task, in this repo). The trained GeoRT models the GUI uses are in
+# Needs uv (https://docs.astral.sh/uv/): it downloads the Python versions if they are missing. The camera mode tracks the
+# hand with MediaPipe (teleop/manus/hand_landmarker.task, in this repo) by default; with wilor, WiLoR (a MANO hand fit
+# on an NVIDIA GPU; the upstream checkout is cloned into WiLoR/, not part of this repo; its licence is CC BY-NC-ND 4.0,
+# non-commercial) can be picked instead under Dev Mode. The trained GeoRT models the GUI uses are in
 # retargetor/GeoRT_checkpoint/left_hand and right_hand (training them is done in agi-os).
 # With hand, the C++ library the hand controller needs is built (retargetor/dex-retargetor-cpp/build/libdexrt.so:
 # the torque/impedance controller and the dexrt solver) and the system is set up for the hardware (sudo;
@@ -18,6 +23,10 @@
 # app menu and the desktop (gui/install_launcher.sh). Afterwards, things that are not in git and must be put in place by hand:
 #   MANUS SDK      copy MANUS_Core_3.2.0_SDK_Linux/ beside this repo (../MANUS_Core_3.2.0_SDK_Linux/Python is loaded by
 #                  teleop/manus/stream/stream_gloves.py); checked here
+#   MANO model     mano_v1_2.zip from https://mano.is.tue.mpg.de (licensed), unzipped into WiLoR/MANO/ (its
+#                  models/MANO_RIGHT.pkl is linked into WiLoR/mano_data/), for the WiLoR pipeline;
+#                  WiLoR-mini fetches its own copy on first use unless run with --no-mano-download
+# The WiLoR weights (WiLoR/pretrained_models/detector.pt 54 MB, wilor_final.ckpt 2.6 GB) are downloaded by wilor, once.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
@@ -26,9 +35,9 @@ WHICH=""
 for arg in "$@"; do
     case "$arg" in
         --recreate) RECREATE=1 ;;
-        hand|launcher) WHICH="$WHICH $arg" ;;
-        all) WHICH="$WHICH hand" ;;
-        -h|--help) sed -n '2,/^#                  teleop\/manus\/stream\/stream_gloves.py/p' "$0"; exit 0 ;;
+        hand|wilor|launcher) WHICH="$WHICH $arg" ;;
+        all) WHICH="$WHICH hand wilor" ;;
+        -h|--help) sed -n '2,/^# The WiLoR weights/p' "$0"; exit 0 ;;
         *) echo "unknown argument: $arg" >&2; exit 2 ;;
     esac
 done
@@ -198,6 +207,45 @@ if wants hand; then
     fi
 fi
 
+WILOR_REPO=https://github.com/rolpotamias/WiLoR.git
+WILOR_COMMIT=fcb9113      # the upstream checkout this was built against (WiLoR/ itself is not part of this repo)
+
+if wants wilor; then
+    if [[ ! -d WiLoR/wilor ]]; then
+        echo "== cloning WiLoR ($WILOR_COMMIT) into WiLoR/"
+        git clone "$WILOR_REPO" WiLoR
+        git -C WiLoR checkout --quiet "$WILOR_COMMIT"
+    fi
+    make_venv WiLoR/.venv 3.10
+    "${UV_INSTALL[@]}" --python WiLoR/.venv/bin/python -r requirements-wilor.txt
+    # WiLoR-mini without its dependencies: its own pins (torch<=2.5) would replace the CUDA torch above
+    uv pip install --python WiLoR/.venv/bin/python --no-deps \
+        "wilor_mini @ git+https://github.com/warmshao/WiLoR-mini@ebec42f94c389070cdd7dda6fd1bf0b4a659c960"
+    # chumpy (MANO's loader) imports numpy and pip in its setup.py: no build isolation, and pip in the venv (uv's venvs
+    # have none); setuptools too, which the build needs without isolation
+    "${UV_INSTALL[@]}" --python WiLoR/.venv/bin/python pip setuptools wheel
+    uv pip install --python WiLoR/.venv/bin/python --no-build-isolation \
+        "chumpy @ git+https://github.com/mattloper/chumpy@580566eafc9ac68b2614b64d6f7aaa84eebb70da"
+    echo "== WiLoR/.venv ready: $(WiLoR/.venv/bin/python -c 'import torch, wilor_mini, chumpy; print("torch", torch.__version__, "cuda", torch.cuda.is_available())')"
+    # the public WiLoR weights (WiLoR's README); skipped when present, a partial download is resumed
+    WEIGHTS_URL=https://huggingface.co/spaces/rolpotamias/WiLoR/resolve/main/pretrained_models
+    mkdir -p WiLoR/pretrained_models
+    for name in detector.pt wilor_final.ckpt; do
+        target=WiLoR/pretrained_models/$name
+        if [[ -s $target ]]; then
+            echo "== $target present"
+            continue
+        fi
+        echo "== downloading $target"
+        curl -L --fail --retry 3 -C - -o "$target.part" "$WEIGHTS_URL/$name"
+        mv "$target.part" "$target"
+    done
+    # the official MANO download unzipped into WiLoR/MANO/: linked to where WiLoR reads it (WiLoR/mano_data/)
+    WiLoR/.venv/bin/python -c 'import sys; sys.path.insert(0, "."); from teleop.manus.wilor.wilor_hands import link_mano; link_mano()'
+    for f in WiLoR/pretrained_models/detector.pt WiLoR/pretrained_models/wilor_final.ckpt WiLoR/mano_data/MANO_RIGHT.pkl; do
+        [[ -e $f ]] || echo "   note: $f is missing (see the header of this script)"
+    done
+fi
 # Only the launcher (hand also installs it, after its environment)
 if wants launcher && ! wants hand && [[ $(uname -s) == Linux ]]; then
     gui/install_launcher.sh

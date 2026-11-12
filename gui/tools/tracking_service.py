@@ -1,13 +1,13 @@
 """The tracking service: glove / camera -> GeoRT -> hand controller, as its own process, apart from the GUI.
 
 The GUI only draws. Everything on the control path runs here: the tracking source (the MANUS SDK, the webcam with
-MediaPipe), the per-side GloveWorkers (GeoRT retargeting, the saved alignment, the controller
+MediaPipe, or the WiLoR service), the per-side GloveWorkers (GeoRT retargeting, the saved alignment, the controller
 session at 100 Hz) and the search / auto-connect logic. Nothing the GUI does (rendering, a garbage-collection pause,
 a window drag) can delay a target to the hand, because it happens in another process.
 
 Started by the GUI (gui/tools/tracking_link.py), or by hand:
 
-    hand/.hand/bin/python gui/tools/tracking_service.py --source glove|camera
+    hand/.hand/bin/python gui/tools/tracking_service.py --source glove|camera|wilor|wilor_mini
 
 Two local ZMQ sockets, bound on free ports and announced on stdout once the service is up:
 
@@ -45,7 +45,7 @@ for path in (HERE, ROOT):
         sys.path.insert(0, str(path))
 
 SIDES = ("Left", "Right")
-SOURCES = ("glove", "camera")
+SOURCES = ("glove", "camera", "wilor", "wilor_mini")
 SEARCH_GRACE_S = 2.5          # "searching" this long after the source is up, then a missing hand is "not found"
 PUBLISH_HZ = 60
 COMMAND_POLL_MS = 5
