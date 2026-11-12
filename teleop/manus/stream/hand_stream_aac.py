@@ -473,7 +473,8 @@ def parse_args(argv=None):
     camera = parser.add_argument_group('camera hand tracking (--source camera, MediaPipe on a webcam instead of the glove)')
     camera.add_argument('--source', choices=('manus', 'camera'), default='manus',
                         help='skeleton source: the MANUS glove (default) or webcam hand tracking')
-    camera.add_argument('--camera-index', type=int, default=0, help='/dev/videoN of the webcam')
+    camera.add_argument('--camera-index', type=int, default=None,
+                        help='/dev/videoN of the webcam (default: AAC_CAMERA_INDEX, else the first colour camera)')
     camera.add_argument('--camera-width', type=int, default=640)
     camera.add_argument('--camera-height', type=int, default=480)
     camera.add_argument('--camera-fps', type=float, default=30.0)

@@ -61,7 +61,8 @@ class LatestFrame:
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--address", default=DEFAULT_ADDRESS, help="ZMQ PUB address to bind")
-    parser.add_argument("--camera-index", type=int, default=0)
+    parser.add_argument("--camera-index", type=int, default=None,
+                        help="/dev/videoN (default: AAC_CAMERA_INDEX, else the first colour camera)")
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--height", type=int, default=480)
     parser.add_argument("--fps", type=float, default=30.0)
@@ -88,14 +89,12 @@ def main(argv=None):
     if args.tracker == "wilor_mini":
         options["allow_mano_download"] = not args.no_mano_download
     tracker = TRACKERS[args.tracker](**options)
-    capture = cv2.VideoCapture(args.camera_index, cv2.CAP_V4L2)
-    if not capture.isOpened():
-        capture = cv2.VideoCapture(args.camera_index)
-    if not capture.isOpened():
-        raise SystemExit(f"cannot open camera {args.camera_index}")
-    capture.set(cv2.CAP_PROP_FRAME_WIDTH, args.width)
-    capture.set(cv2.CAP_PROP_FRAME_HEIGHT, args.height)
-    capture.set(cv2.CAP_PROP_FPS, args.fps)
+    from teleop.manus.tools.camera_device import open_camera
+    try:
+        capture, _ = open_camera(args.camera_index, args.width, args.height, args.fps,
+                                 log=lambda text: print(text, flush=True))
+    except RuntimeError as error:
+        raise SystemExit(str(error)) from None
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.setsockopt(zmq.SNDHWM, 2)

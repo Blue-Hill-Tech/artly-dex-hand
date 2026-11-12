@@ -446,7 +446,7 @@ class FlatPose:
 class CameraSource:
     """Same interface as skeleton_source.Source: connect(), consume() -> (frames, devices), metadata(glove_id)."""
 
-    def __init__(self, sides, camera_index=0, width=640, height=480, fps=30.0, model=None, mirror=False,
+    def __init__(self, sides, camera_index=None, width=640, height=480, fps=30.0, model=None, mirror=False,
                  any_hand=False, preview=False, min_confidence=0.5, depth_fix=False, palm=None, fit_to_glove=True,
                  flat_pose=True):
         self.backend = _NoSdk()
@@ -486,14 +486,9 @@ class CameraSource:
     # -- interface used by preview_dex_retargeting.run --
     def connect(self):
         import cv2
-        self.capture = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
-        if not self.capture.isOpened():
-            self.capture = cv2.VideoCapture(self.camera_index)
-        if not self.capture.isOpened():
-            raise RuntimeError(f'cannot open camera {self.camera_index}')
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
-        self.capture.set(cv2.CAP_PROP_FPS, self.fps)
+        from teleop.manus.tools.camera_device import open_camera
+        # camera_index None: AAC_CAMERA_INDEX, else the first camera that gives a colour image (camera_device.py)
+        self.capture, self.camera_index = open_camera(self.camera_index, self.width, self.height, self.fps)
         from mediapipe.tasks.python import BaseOptions, vision
         options = vision.HandLandmarkerOptions(
             base_options=BaseOptions(model_asset_path=str(self.model)), running_mode=vision.RunningMode.VIDEO,
@@ -660,7 +655,7 @@ class CameraSource:
 
 
 def load_camera_source(args, sides):
-    return CameraSource(sides, camera_index=getattr(args, 'camera_index', 0), width=getattr(args, 'camera_width', 640),
+    return CameraSource(sides, camera_index=getattr(args, 'camera_index', None), width=getattr(args, 'camera_width', 640),
                         height=getattr(args, 'camera_height', 480), fps=getattr(args, 'camera_fps', 30.0),
                         model=getattr(args, 'camera_model', None), mirror=getattr(args, 'camera_mirror', False),
                         any_hand=getattr(args, 'camera_any_hand', False), preview=getattr(args, 'camera_preview', False),

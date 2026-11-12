@@ -157,6 +157,32 @@ check_adapter_group() {
     fi
 }
 
+# The camera mode's webcam (/dev/video*, group video). A desktop login usually gets access to it anyway; a user who does
+# not (a remote or second session, some distributions) needs the group, or OpenCV cannot open the camera.
+check_camera_access() {
+    [[ $(uname -s) == Linux ]] || return 0
+    local device found=0 blocked=0
+    for device in /dev/video*; do
+        [[ -e $device ]] || continue
+        found=1
+        [[ -r $device && -w $device ]] || blocked=1
+    done
+    if [[ $found -eq 0 ]]; then
+        echo "== no camera (/dev/video*) found now: the camera mode needs a webcam (camera key / privacy shutter?)"
+        return 0
+    fi
+    if [[ $blocked -eq 0 ]] || id -nG "$USER" | tr ' ' '\n' | grep -qx video; then
+        echo "== $USER may open the camera"
+        return 0
+    fi
+    echo "== $USER may not open the camera (not in the group video)"
+    if may_sudo && sudo usermod -aG video "$USER"; then
+        echo "   added: log out and back in (or reboot) before using the camera mode"
+    else
+        echo "   run:  sudo usermod -aG video $USER   then log out and back in"
+    fi
+}
+
 # The MANUS glove dongle is a USB HID device that only root may open without this rule (the SDK then finds no glove).
 MANUS_UDEV_RULE=/etc/udev/rules.d/70-manus-hid.rules
 MANUS_UDEV_TEXT='# MANUS glove dongle (HIDAPI/libusb, hidraw): readable without root. Installed by agi-os/setup_envs.sh.
@@ -199,6 +225,7 @@ if wants hand; then
     check_qt_libs
     build_dexrt
     check_adapter_group
+    check_camera_access
     check_manus_udev
     check_manus_sdk
     # the GUI in the app menu and on the desktop (gui/install_launcher.sh; --remove takes them away)

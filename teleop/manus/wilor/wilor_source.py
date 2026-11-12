@@ -36,7 +36,7 @@ DOWNLOAD_TIMEOUT_S = 1800.0  # WiLoR-mini's first start: it downloads the 2.6 GB
 class WilorSource:
     """connect() -> consume() -> (frames, devices), metadata(glove_id), close()."""
 
-    def __init__(self, sides, address=DEFAULT_ADDRESS, camera_index=0, preview=False, fast=True, palm=None,
+    def __init__(self, sides, address=DEFAULT_ADDRESS, camera_index=None, preview=False, fast=True, palm=None,
                  min_score=0.5, python=WILOR_PYTHON, wilor_root=None, tracker="wilor", allow_mano_download=True,
                  fit_to_glove=True):
         self.backend = _NoSdk()
@@ -118,8 +118,9 @@ class WilorSource:
 
     def command(self):
         """The service's command line."""
-        command = [str(self.python), "-u", str(SERVICE), "--address", self.address,
-                   "--camera-index", str(self.camera_index), "--tracker", self.tracker]
+        command = [str(self.python), "-u", str(SERVICE), "--address", self.address, "--tracker", self.tracker]
+        if self.camera_index is not None:              # else the service finds the camera (camera_device.py)
+            command += ["--camera-index", str(self.camera_index)]
         if self.preview:
             command.append("--preview")
         if not self.fast:
