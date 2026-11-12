@@ -22,8 +22,11 @@ if str(ROOT) not in sys.path:
 # kind -> (script, button label, label while it runs, how messages name it)
 DEMOS = {"position": ("demo/mcp_ellipses.py", "Position demo", "Stop the position demo", "the position demo"),
          "torque": ("demo/impedance_ellipses.py", "Torque demo", "Stop the torque demo", "the torque demo"),
-         "calibrate": ("demo/tools/calibrate_torque_demo.py", "Calibrate torque demo", "Stop calibrating", "the calibration")}
-LOOPING = ("position", "torque")     # run until stopped; the calibration ends by itself
+         "calibrate": ("demo/tools/calibrate_torque_demo.py", "Calibrate torque demo", "Stop calibrating", "the calibration"),
+         # teleop's torque control: breakaway, tune, apply into the hand's CAN FD torque config (the motor's config)
+         "friction": ("teleop/calibration/acc/friction/friction_calibrate.py", "Calibrate friction",
+                      "Stop friction calibration", "the friction calibration")}
+LOOPING = ("position", "torque")     # run until stopped; the calibrations end by themselves
 TIP_STOP_KINDS = ("torque", "calibrate")   # have the fingertip-distance safety stop (Dev Mode can turn it off)
 STOP_WAIT_MS = 15000          # easing back to rest takes a few seconds (the impedance demo leaves torque mode first)
 
@@ -40,12 +43,13 @@ class DemoProcess(QObject):
     output = pyqtSignal(str)
     stopped = pyqtSignal(int)          # exit code
 
-    def __init__(self, side, kind, parent=None, adapter=None, tip_stop=True):
+    def __init__(self, side, kind, parent=None, adapter=None, tip_stop=True, fine=False):
         super().__init__(parent)
         if kind not in DEMOS:
             raise ValueError(f"demo kind must be one of {sorted(DEMOS)}")
         self.side, self.kind, self.adapter = side, kind, adapter
         self.tip_stop = tip_stop                           # Dev Mode: the torque demo's fingertip-distance safety stop
+        self.fine = fine                                   # Dev Mode: the friction calibration's fine mode (--fine)
         self.label, self.running_label, self.noun = DEMOS[kind][1], DEMOS[kind][2], DEMOS[kind][3]
         self.stop_requested = False
         self.process = QProcess(self)
@@ -71,6 +75,8 @@ class DemoProcess(QObject):
             command += ["--loops", "0"]
         if self.kind in TIP_STOP_KINDS and not self.tip_stop:
             command.append("--no-tip-stop")
+        if self.kind == "friction" and self.fine:
+            command.append("--fine")
         return command
 
     def start(self):

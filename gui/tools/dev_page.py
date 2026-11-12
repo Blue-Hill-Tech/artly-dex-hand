@@ -101,6 +101,7 @@ class DevPage(QWidget):
     pipeline_changed = pyqtSignal(str)          # a PIPELINES key
     adapter_changed = pyqtSignal(str, object)   # side, adapter path or None (the hand is not used)
     tip_stop_changed = pyqtSignal(bool)         # the torque demo's fingertip-distance safety stop on / off
+    friction_fine_changed = pyqtSignal(bool)    # Calibrate friction: the fine calibration (True) or the normal one
     save_requested = pyqtSignal()               # Save: make the chosen adapters the hands' defaults
     gains_changed = pyqtSignal(str, float, float)   # side, kp, kd (from the next motor start)
     gains_save_requested = pyqtSignal()         # Save: write the chosen gains into the hands' configs
@@ -108,7 +109,7 @@ class DevPage(QWidget):
     checkpoints_save_requested = pyqtSignal()   # Save: make the chosen GeoRT runs the defaults
 
     def __init__(self, corner, pipelines, pipeline, adapters, defaults, list_adapters, tip_stop=True,
-                 pins=None, list_runs=None, gains=None, gain_overrides=None, parent=None):
+                 pins=None, list_runs=None, gains=None, gain_overrides=None, friction_fine=False, parent=None):
         """pins: {(source group, side): GeoRT run name} chosen now (missing = newest); list_runs(side): the runs
         (teleop/manus/geort/checkpoints.list_runs)."""
         """corner: the window buttons; pipelines: {key: name}; adapters: {side: path or None} (current choice);
@@ -336,6 +337,34 @@ class DevPage(QWidget):
         self.tip_stop = None
         self.set_tip_stop(tip_stop)
 
+        # Friction calibration: normal or fine
+        body.addSpacing(26)
+        body.addWidget(self._label("Friction calibration", SECTION_STYLE))
+        body.addWidget(self._label("What a hand's Calibrate friction button runs. Normal: 3 angles per joint, 5 mA "
+                                   "steps, validated at 20 deg/s (mean error up to 1.5 deg). Fine: 10 angles, 2 mA "
+                                   "steps, every reading 3 times; validated at 10, 20 and 40 deg/s at two positions "
+                                   "(mean error up to 1.0 deg), refined in 0.05 steps. Fine takes several times as "
+                                   "long. Applies from the next calibration start.", TEXT_STYLE))
+        toggle = QHBoxLayout()
+        toggle.setSpacing(0)
+        self.friction_fine_buttons = {}
+        fine_group = QButtonGroup(self)
+        fine_group.setExclusive(True)
+        for value, text, name in ((False, "Normal", "first"), (True, "Fine", "last")):
+            button = QPushButton(text)
+            button.setCheckable(True)
+            button.setCursor(Qt.PointingHandCursor)
+            button.setObjectName(name)
+            button.setStyleSheet(SEGMENT_STYLE + "QPushButton { min-width: 80px; }")
+            button.clicked.connect(lambda _=False, value=value: self._friction_fine_picked(value))
+            fine_group.addButton(button)
+            toggle.addWidget(button)
+            self.friction_fine_buttons[value] = button
+        toggle.addStretch(1)
+        body.addLayout(toggle)
+        self.friction_fine = None
+        self.set_friction_fine(friction_fine)
+
         # Hand adapters
         body.addSpacing(26)
         body.addWidget(self._label("Hand adapters", SECTION_STYLE))
@@ -535,6 +564,15 @@ class DevPage(QWidget):
         if on != self.tip_stop:
             self.tip_stop = on
             self.tip_stop_changed.emit(on)
+
+    def set_friction_fine(self, on):
+        self.friction_fine = bool(on)
+        self.friction_fine_buttons[self.friction_fine].setChecked(True)
+
+    def _friction_fine_picked(self, on):
+        if on != self.friction_fine:
+            self.friction_fine = on
+            self.friction_fine_changed.emit(on)
 
     def set_adapter(self, side, path):
         self.adapters[side] = path

@@ -57,9 +57,11 @@ QToolTip { background: #FAF8EF; color: #3A372F; border: 1px solid #D9D3BF; paddi
 
 GLOVE = "Connect to glove"
 POSITION_DEMO, TORQUE_DEMO, CALIBRATE = "Position demo", "Torque demo", "Calibrate torque demo"
+FRICTION = "Calibrate friction"     # torque control's friction calibration (friction_calibrate.py), for Start the motor
 # The "..." panel of a hand: one button each, top to bottom (its motor is the Start Left / Start Right button itself)
-CONTROL_ACTIONS = (GLOVE, POSITION_DEMO, TORQUE_DEMO, CALIBRATE)
-DEMO_KINDS = {POSITION_DEMO: "position", TORQUE_DEMO: "torque", CALIBRATE: "calibrate"}   # -> demo_process.DEMOS
+CONTROL_ACTIONS = (GLOVE, POSITION_DEMO, TORQUE_DEMO, CALIBRATE, FRICTION)
+DEMO_KINDS = {POSITION_DEMO: "position", TORQUE_DEMO: "torque", CALIBRATE: "calibrate",
+              FRICTION: "friction"}   # -> demo_process.DEMOS
 SKELETON_LABELS = {True: "Hide skeleton", False: "Show skeleton"}   # by whether the skeleton is shown now
 CONTROL_BUTTON_WIDTH_PX = 280
 WARNING_STYLE = "font-size: 16px; color: #B5452F;"   # a problem the user must fix (warm red, readable on cream)
@@ -578,6 +580,7 @@ class MainPage(QWidget):
         self.saved_pins = dict(self.pins)
         # Dev Mode: the torque demo's fingertip-distance safety stop (on unless turned off there; remembered)
         self.tip_stop = str(self.settings.value("torque_demo_tip_stop", "true")).lower() != "false"
+        self.friction_fine = str(self.settings.value("friction_calibration_fine", "false")).lower() == "true"
         corner = QHBoxLayout()
         corner.setContentsMargins(0, 0, 0, 0)
         corner.setSpacing(14)
@@ -725,6 +728,12 @@ class MainPage(QWidget):
         self.tip_stop = bool(on)
         self.settings.setValue("torque_demo_tip_stop", "true" if on else "false")
         print(f"[gui] torque demo fingertip-distance safety stop: {'on' if on else 'OFF'}", flush=True)
+
+    def set_friction_fine(self, on):
+        """Dev Mode: Calibrate friction runs the fine calibration (friction_calibrate.py --fine), from its next start."""
+        self.friction_fine = bool(on)
+        self.settings.setValue("friction_calibration_fine", "true" if on else "false")
+        print(f"[gui] friction calibration: {'FINE' if on else 'normal'}", flush=True)
 
     # --- GeoRT models (Dev Mode) -----------------------------------------------------------------------------------
     def _pin_choice(self):
@@ -1146,7 +1155,8 @@ class MainPage(QWidget):
             controls.warn(f"The {other.lower()} hand is using the same adapter: stop it first, or give each hand its "
                           "own adapter in Dev Mode.")
             return
-        demo = DemoProcess(side, DEMO_KINDS[name], self, adapter=self.adapters[side], tip_stop=self.tip_stop)
+        demo = DemoProcess(side, DEMO_KINDS[name], self, adapter=self.adapters[side], tip_stop=self.tip_stop,
+                           fine=self.friction_fine)
         demo.output.connect(lambda line: print(line, flush=True))
         demo.stopped.connect(lambda code, side=side, demo=demo: self._demo_stopped(side, demo, code))
         self.demos[side] = demo
@@ -1156,6 +1166,11 @@ class MainPage(QWidget):
         if name == CALIBRATE:
             controls.notice(f"Calibrating the {side.lower()} hand for the torque demo (about 10 minutes). "
                             "Keep clear of the fingers; click again to stop.")
+        elif name == FRICTION:
+            controls.notice(f"Calibrating the {side.lower()} hand's friction for torque control"
+                            + (" (FINE, Dev Mode: several hours for all joints)" if self.friction_fine else "")
+                            + ": every joint, one at a time (this takes a long time; progress in the terminal). Keep "
+                            "clear of the fingers; click again to stop (the config is then left unchanged).")
         elif name == TORQUE_DEMO:
             controls.notice(("Torque demo with this hand's calibration. Click again to stop." if calibrated else
                              f"Torque demo without a calibration (click {CALIBRATE} first for a better one). "
@@ -1173,6 +1188,9 @@ class MainPage(QWidget):
         controls.set_active(demo.label, False)
         if code == 0 and demo.kind == "calibrate":
             controls.notice("Calibration done: the torque demo now uses it.")
+        elif code == 0 and demo.kind == "friction":
+            controls.notice("Friction calibration done and written to the hand's torque config: Start the motor to "
+                            "use it.")
         elif code == 0 or demo.stop_requested:
             controls.notice(f"{demo.noun[0].upper()}{demo.noun[1:]} stopped.")
         else:
@@ -1315,13 +1333,15 @@ class MainWindow(QMainWindow):
         from teleop.manus.geort.checkpoints import list_runs
         page = DevPage(WindowButtons(self), PIPELINES, self.page.pipeline, self.page.adapters, defaults, list_adapters,
                        tip_stop=self.page.tip_stop, pins=self.page.pins, list_runs=list_runs,
-                       gains=self.page.gains, gain_overrides=self.page.gain_overrides)
+                       gains=self.page.gains, gain_overrides=self.page.gain_overrides,
+                       friction_fine=self.page.friction_fine)
         page.setAutoFillBackground(True)
         page.setStyleSheet(f"background: {BACKGROUND.name()};")
         page.back.connect(self.show_main)
         page.pipeline_changed.connect(self.page.set_pipeline)
         page.adapter_changed.connect(self.page.set_adapter)
         page.tip_stop_changed.connect(self.page.set_tip_stop)
+        page.friction_fine_changed.connect(self.page.set_friction_fine)
         page.save_requested.connect(self.page.save_adapters)
         page.checkpoint_changed.connect(self.page.set_checkpoint)
         page.checkpoints_save_requested.connect(self.page.save_checkpoints)

@@ -1,0 +1,23 @@
+{
+  "note": "Home pose for friction-compensation tests on the left D21 (v2 firmware): the hand is put here, in position mode, before each joint is tested so fingers cannot collide. Captured from the hand as the user set it.",
+  "captured_unix_s": 1793732034.6658666,
+  "control_mode_at_capture": 1,
+  "pose_deg": {
+    "thumb_abduction": 4.92,
+    "thumb_rotation": -0.26,
+    "thumb_cmc": 0.0,
+    "thumb_mcp": 0.0,
+    "index_abduction": 18.49,
+    "index_mcp": 1.81,
+    "index_pip": 0.0,
+    "middle_abduction": 4.26,
+    "middle_mcp": 0.0,
+    "middle_pip": 0.03,
+    "ring_abduction": -0.21,
+    "ring_mcp": 0.03,
+    "ring_pip": 0.17,
+    "pinky_abduction": -5.76,
+    "pinky_mcp": 0.0,
+    "pinky_pip": 0.0
+  }
+}
