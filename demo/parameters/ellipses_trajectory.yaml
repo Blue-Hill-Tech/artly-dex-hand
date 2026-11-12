@@ -1,0 +1,28 @@
+# Tip ellipses for demo/mcp_ellipses.py: each fingertip follows an ellipse, on the MCP joint only (flexion +
+# abduction; the PIP stays open), at its own frequency. The thumb does the same on its base: thumb_abduction (a) +
+# thumb_cmc (b), rotation held (rotation moves the tip nearly the same way as abduction: no ellipse). Edit and rerun; the demo converts millimetres to joint degrees from the hand's URDF and refuses
+# nothing: neighbouring fingers are NOT checked (watch them), and targets past a joint's range are clipped to it.
+#
+# Per finger:
+#   a_mm       semi-axis along the flexion direction (tip moves this far each way from the centre by curling)
+#   b_mm       semi-axis sideways (abduction). The fingers sit ~1.5 mm apart at the MCP and a finger abducting
+#              alone touches its neighbour at ~4 deg (URDF scan, 2026-11-05); spread 10 deg apart, about +-3 deg =
+#              4 mm each clears in the worst case. NOT checked: watch the fingers and stop if neighbours touch.
+#              Index 1 deg of abduction = 1.36 mm at the tip, 1 deg of MCP flexion = 1.63 mm; thumb: 1 deg
+#              abduction = 2.06 mm, 1 deg cmc = 1.9 mm. Past a joint's range the ellipse runs flat on the stop.
+#   hz         turns per second
+#   spin       ccw or cw (the other way round)
+#   phase_deg  where on the ellipse the finger starts (0 = the sideways extreme)
+#
+# tip_x = centre + a_mm * sin(phase), tip_y = spread + b_mm * cos(phase), phase = 2 pi hz t + phase_deg.
+duration_s: 20            # seconds per pass
+ramp_s: 1.0               # the ellipses grow from the centre over this time at the start of a pass and shrink at its end
+spread_deg: [14, 5, -5, -16]   # abduction of index, middle, ring, pinky while circling (+ is toward the thumb)
+flex_centre_deg: 30       # MCP flexion the ellipses are centred on
+thumb_centre_deg: [35, 0, 20]   # thumb_abduction, thumb_rotation (held), thumb_cmc at the thumb ellipse's centre
+fingers:
+  thumb:  {a_mm: 45, b_mm: 30, hz: 0.8, spin: ccw, phase_deg: 0}
+  index:  {a_mm: 10, b_mm: 7,  hz: 0.8, spin: ccw, phase_deg: 0}
+  middle: {a_mm: 25, b_mm: 4,  hz: 0.8, spin: cw,  phase_deg: 90}
+  ring:   {a_mm: 35, b_mm: 6,  hz: 0.8, spin: ccw, phase_deg: 180}
+  pinky:  {a_mm: 25, b_mm: 5,  hz: 1.0, spin: cw,  phase_deg: 270}

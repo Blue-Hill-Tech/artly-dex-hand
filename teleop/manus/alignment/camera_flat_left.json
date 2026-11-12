@@ -1,0 +1,28 @@
+{
+ "_about": "Bend (deg, toward the palm) MediaPipe reported at each finger joint [MCP, PIP, DIP] while the hand was held flat: teleop/manus/tools/camera_source.py FlatPose removes it. Captured by Align in the GUI camera mode; delete the file for no correction.",
+ "side": "Left",
+ "frames": 15,
+ "measured": "2026-11-09 14:05:34",
+ "bends_deg": {
+  "index": [
+   11.31,
+   13.14,
+   27.66
+  ],
+  "middle": [
+   15.83,
+   15.14,
+   1.62
+  ],
+  "ring": [
+   16.27,
+   11.8,
+   5.39
+  ],
+  "pinky": [
+   6.93,
+   15.19,
+   14.18
+  ]
+ }
+}

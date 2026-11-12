@@ -1,0 +1,39 @@
+# One-Euro filter on the 16 retargeted joint targets (degrees) sent to the hand.
+# Loaded by teleop/manus/stream/hand_stream_client.py (--filter-config, default: this file; --no-filter to bypass).
+#
+# cutoff = min_cutoff_hz + beta * |joint speed in deg/s|
+#   min_cutoff_hz  smoothing when slow or still. Lower = less jitter, more lag at rest.   Typical 0.5 - 3
+#   beta           how fast the cutoff opens up with speed. Higher = less lag in fast moves,
+#                  more jitter passes through.                                          Typical 0.005 - 0.1
+#   d_cutoff_hz    smoothing of the speed estimate itself; rarely needs changing.        Typical 1
+#
+# Tuning: set beta 0, lower min_cutoff_hz until the hand stops trembling while your glove holds still;
+# then raise beta until fast moves no longer lag. With --solver dex the package's own low-pass filter
+# (alpha 0.1) also applies; --solver dexrt has none, so this file is the only filter.
+# Torque-mode teleop (2026-11-02): the retargeter output carries ~4 deg peak-to-peak of 3-15 Hz jitter which the
+# torque loop follows faithfully (the firmware's position loop used to smooth it). Replayed offline on a glove log:
+#   0.5 / 0.02  -> 3.8 deg of that jitter left, 28 ms lag      (the previous setting)
+#   1.5 / 0.002 -> 2.4 deg,                     57 ms lag      (current)
+#   0.8 / 0     -> 1.0 deg,                    133 ms lag      (if the hand must be calm and lag is acceptable)
+one_euro:
+  enabled: true                # shared settings: both hands, unless the hand's block below overrides them
+  min_cutoff_hz: 1.0
+  beta: 0.002
+  d_cutoff_hz: 1.0
+  joints: {}                   # optional per-joint overrides for both hands (names as in the hand's joint list)
+  # Per-hand blocks: may set enabled, min_cutoff_hz, beta, d_cutoff_hz and joints for that hand only; their joints
+  # are merged into the shared joints above (per joint, per key). The sender picks the block of the hand it drives.
+  #
+  # The thumb base is the noisiest output of the retargeter (lower min_cutoff and beta 0 there for more smoothing).
+  # Replayed on the right-glove logs right_finger_tip_1/_2 (2026-11-05), thumb abduction + rotation, 5-15 Hz jitter
+  # left (median / p90) and lag: no filter 1.34 / 7.6 deg; 1.0 / 0.002 (the shared setting) 0.38 / 4.0 deg, 60 ms;
+  # 0.8 / 0 -> 0.22 / 1.2 deg, 125 ms; 0.6 / 0 -> 0.18 / 0.9 deg, 155 ms. A larger beta (e.g. 0.02) smooths LESS:
+  # 0.81 / 7.2 deg, 25 ms.
+  left:
+    joints: {}
+  right:                       # the right glove's thumb is ~5x noisier than the left's (5-15 Hz, 2026-11-05)
+    joints:
+      thumb_abduction: {min_cutoff_hz: 1.0, beta: 0.001}
+      thumb_rotation: {min_cutoff_hz: 1.0, beta: 0.001}
+      thumb_cmc: {min_cutoff_hz: 1.0, beta: 0.001}
+      thumb_mcp: {min_cutoff_hz: 1.0, beta: 0.001}

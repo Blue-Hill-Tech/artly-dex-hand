@@ -8,3 +8,15 @@ log/
 .pytest_cache/
 # Distributed intact through the vendor-assets-2026-09 release.
 D21_Controller*.7z
+
+# The GUI's environments and build output (rebuild with ./setup_envs.sh)
+hand/.hand/
+retargetor/dex-retargetor-cpp/build/
+
+# friction calibration: a stopped run's checkpoint (friction_calibrate.py --resume)
+teleop/calibration/acc/friction/friction_checkpoint_*.json
+teleop/calibration/acc/friction/friction_checkpoint_*.tmp
+
+# The upstream WiLoR checkout with its venv, weights and MANO files (setup_envs.sh wilor clones it; not part of
+# this repo: CC BY-NC-ND 4.0, and MANO is licensed separately)
+/WiLoR

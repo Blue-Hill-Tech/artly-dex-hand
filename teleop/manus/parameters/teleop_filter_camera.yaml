@@ -1,0 +1,11 @@
+# One-Euro filter for the WEBCAM source (--source camera), used instead of teleop_filter.yaml when no --filter-config is
+# given. The camera already lags the glove (30 fps: a new pose every ~38 ms, ~27 ms of MediaPipe per frame), so this
+# filter is lighter than the glove's. Replayed on a camera session (log manus_torque_22, finger joints, 3-12 Hz):
+#   1.0 / 0.002  (glove setting)  -> 0.9 deg jitter left, 76 ms lag
+#   2.0 / 0.005  (this file)      -> 1.5 deg,             38 ms lag
+#   5.0 / 0.010                   -> 2.1 deg,             38 ms lag
+one_euro:
+  enabled: true
+  min_cutoff_hz: 0.5
+  beta: 0.001
+  d_cutoff_hz: 1.0

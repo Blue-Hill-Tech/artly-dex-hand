@@ -1,0 +1,55 @@
+# Impedance settings for demo/impedance_ellipses.py. The ellipses themselves (a_mm, b_mm, hz, spin, phase, spread,
+# centres, duration) come from demo/mcp_ellipses.yaml, so both demos draw the same paths; the friction
+# compensation, tau_max and the per-joint hold gains come from the torque block of the hand config
+# (teleop/configure/acc/torque_control/hand_config_aac_r_torque_canfd.json by default).
+#
+# Each fingertip on an ellipse is pulled toward its moving target point by a spring and a damper at the tip:
+#   F = K * (x_target - x_tip) - D * v_tip                       (N; x in m, v in m/s, from the URDF)
+#   joint torque = J^T F / nm_per_ma                             (mA; J = fingertip Jacobian of the two ellipse joints)
+# A softer K lets the finger give way when pushed (and lag more); a larger K tracks tighter. On an index MCP
+# (1.6 mm of tip per deg) K = 60 N/m is ~9 mA per deg of error, about the teleop kp of 8; D = 2 N s/m is ~0.3 mA per
+# deg/s, about the teleop kd. Start low; the joints stick until ~60-100 mA, which the friction terms cover.
+stiffness_n_per_m: 150
+damping_ns_per_m: 6.0
+damp_target_velocity: false  # false = the teleop controller's damper, -D v_tip (brakes the tip's own motion only);
+                             # true = D (v_target - v_tip): no drag at the planned speed, less lag (runs 1-6 used true)
+fingers: {}                 # per-finger overrides, e.g. {index: {stiffness_n_per_m: 80, damping_ns_per_m: 2.5}}
+friction: true              # breakaway compensation from the torque config (friction_table/_scale/_ff_scale); false = off
+# Multipliers on the torque config's (teleop) friction amounts, for this demo only:
+#   friction_ff_gain      the feed-forward that pushes along the target's motion (config friction_ff_scale x
+#                         breakaway), following the target speed smoothed over the config's target_velocity_window_s
+#                         as in teleop (that is how friction_ff_scale was calibrated). It does not look at where the
+#                         joint is: too much carries the joint AHEAD of its target. Run 1 (impedance_ellipse_1,
+#                         2026-11-05; 1.0 but on the UNsmoothed planned speed): finger abductions led by 74-236 ms
+#                         and overshot up to 1.4x. If they still lead with the smoothing, lower this.
+#   friction_error_gain   the term that pushes toward the target as the error grows (config friction_scale x
+#                         breakaway x tanh(error / friction_ramp_deg)); it cannot cause a lead.
+friction_ff_gain: 0.2         # 1.0 = your calibrated amounts
+friction_error_gain: 0.3
+# Dither as in teleop: the torque config's dither_ma (30 mA) square wave at dither_hz (200 Hz), only on the motors of
+# joints that are stuck with an error to close, not on joints whose dither_ma is 0 (the thumb in the right config),
+# not on a motor at tau_max, and only after the torque has faded in. The fingers buzz while it is on.
+dither: false
+# Moving-target dither: +-dither_moving_ma per joint on every ellipse joint while its target moves, flipping every
+# dither_moving_ticks control ticks (2 ticks = ~84 Hz at the ~336 Hz loop). Unlike `dither` above (teleop's: only on
+# a joint that has already stuck, and only the flexion half of a motor pair) it keeps the joints off static
+# friction before they stick, abductions included. Runs 1-5 (2026-11-05): the fingers moved in a staircase, stick ->
+# 0.3-1.5 deg jump forward -> stick, 3-20 steps/s; this is the textbook remedy. 0 = off. The fingers buzz.
+dither_moving_ma: 30
+dither_moving_ticks: 2
+# Learned feed-forward (--learn N): per finger phase bin, the current each ellipse joint needs along this exact
+# trajectory, learned on the hand (see the script's docstring). learn_gain = how much of each pass's residual is
+# taken over per pass (0.5: ~3-5 passes to settle); learn_max_ma caps the table; learn_bins = phase bins per turn.
+learn_gain: 0.3
+learn_max_ma: 150
+learn_bins: 72
+learn_harmonics: 4          # each pass's correction (and a loaded table) keeps only harmonics 1..N of the turn: the
+                            # friction profile along the ellipse is smooth, anything finer is that pass's stick-slip
+                            # jitter (left pinky: 18 sign changes per turn, worse after learning). 0 = no filter.
+nm_per_ma: 0.001            # joint torque per mA of motor current (bench: ~1 mN m per mA)
+gain_ramp_s: 0.5            # all torque fades in over this time after switching to torque mode
+velocity_window_s: 0.01     # joint speed = change of the measured angle over this window
+# Safety: on any of these the demo writes zero torque and puts the hand back in position mode where it stands.
+max_tip_error_mm: 30        # a fingertip further than this from its target
+max_speed_dps: 600          # a joint faster than this ...
+max_speed_ticks: 5          # ... for this many control ticks in a row

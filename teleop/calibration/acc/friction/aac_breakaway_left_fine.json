@@ -1,0 +1,607 @@
+{
+ "measurements": [
+  {
+   "joint": "thumb_abduction",
+   "direction": "+",
+   "angle_deg": 15.3,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "thumb_abduction",
+   "direction": "-",
+   "angle_deg": 15.3,
+   "breakaway_ma": 95.0
+  },
+  {
+   "joint": "thumb_abduction",
+   "direction": "+",
+   "angle_deg": 49.8,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "thumb_abduction",
+   "direction": "-",
+   "angle_deg": 50.0,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "thumb_abduction",
+   "direction": "+",
+   "angle_deg": 85.0,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "thumb_abduction",
+   "direction": "-",
+   "angle_deg": 85.0,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "+",
+   "angle_deg": 7.5,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "-",
+   "angle_deg": 7.6,
+   "breakaway_ma": 45.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "+",
+   "angle_deg": 25.0,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "-",
+   "angle_deg": 25.0,
+   "breakaway_ma": 50.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "+",
+   "angle_deg": 42.0,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "thumb_cmc",
+   "direction": "-",
+   "angle_deg": 42.5,
+   "breakaway_ma": 40.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "+",
+   "angle_deg": 9.7,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "-",
+   "angle_deg": 10.5,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "+",
+   "angle_deg": 34.3,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "-",
+   "angle_deg": 35.0,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "+",
+   "angle_deg": 59.5,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "thumb_mcp",
+   "direction": "-",
+   "angle_deg": 59.5,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "+",
+   "angle_deg": -29.7,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "+",
+   "angle_deg": -18.0,
+   "breakaway_ma": 125.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "-",
+   "angle_deg": -18.1,
+   "breakaway_ma": 90.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "+",
+   "angle_deg": 0.0,
+   "breakaway_ma": 105.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "-",
+   "angle_deg": 0.0,
+   "breakaway_ma": 95.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "+",
+   "angle_deg": 18.0,
+   "breakaway_ma": 115.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "-",
+   "angle_deg": 18.0,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "thumb_rotation",
+   "direction": "-",
+   "angle_deg": 29.6,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "+",
+   "angle_deg": 13.6,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "-",
+   "angle_deg": 13.6,
+   "breakaway_ma": 45.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "+",
+   "angle_deg": 45.0,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "-",
+   "angle_deg": 45.0,
+   "breakaway_ma": 50.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "+",
+   "angle_deg": 72.7,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "index_mcp",
+   "direction": "-",
+   "angle_deg": 72.7,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "index_pip",
+   "direction": "+",
+   "angle_deg": 15.2,
+   "breakaway_ma": 105.0
+  },
+  {
+   "joint": "index_pip",
+   "direction": "-",
+   "angle_deg": 15.3,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "index_pip",
+   "direction": "+",
+   "angle_deg": 49.3,
+   "breakaway_ma": 180.0
+  },
+  {
+   "joint": "index_pip",
+   "direction": "-",
+   "angle_deg": 49.3,
+   "breakaway_ma": 170.0
+  },
+  {
+   "joint": "index_pip",
+   "direction": "+",
+   "angle_deg": 85.9,
+   "breakaway_ma": null
+  },
+  {
+   "joint": "index_pip",
+   "direction": "-",
+   "angle_deg": 85.9,
+   "breakaway_ma": null
+  },
+  {
+   "joint": "index_abduction",
+   "direction": "-",
+   "angle_deg": 14.5,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "index_abduction",
+   "direction": "-",
+   "angle_deg": 18.5,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "index_abduction",
+   "direction": "-",
+   "angle_deg": 20.0,
+   "breakaway_ma": 50.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "+",
+   "angle_deg": 0.3,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "-",
+   "angle_deg": 0.3,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "+",
+   "angle_deg": 4.2,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "-",
+   "angle_deg": 4.2,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "+",
+   "angle_deg": 8.3,
+   "breakaway_ma": 45.0
+  },
+  {
+   "joint": "middle_abduction",
+   "direction": "-",
+   "angle_deg": 8.2,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "+",
+   "angle_deg": 13.5,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "-",
+   "angle_deg": 13.5,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "+",
+   "angle_deg": 45.1,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "-",
+   "angle_deg": 45.1,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "+",
+   "angle_deg": 76.5,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "middle_mcp",
+   "direction": "-",
+   "angle_deg": 76.5,
+   "breakaway_ma": 55.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "+",
+   "angle_deg": 15.2,
+   "breakaway_ma": 45.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "-",
+   "angle_deg": 15.3,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "+",
+   "angle_deg": 49.1,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "-",
+   "angle_deg": 49.1,
+   "breakaway_ma": 155.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "+",
+   "angle_deg": 86.1,
+   "breakaway_ma": 190.0
+  },
+  {
+   "joint": "middle_pip",
+   "direction": "-",
+   "angle_deg": 86.1,
+   "breakaway_ma": 165.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "+",
+   "angle_deg": -4.2,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "-",
+   "angle_deg": -4.2,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "+",
+   "angle_deg": -0.2,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "-",
+   "angle_deg": -0.2,
+   "breakaway_ma": 95.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "+",
+   "angle_deg": 3.8,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "ring_abduction",
+   "direction": "-",
+   "angle_deg": 3.8,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "+",
+   "angle_deg": 13.5,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "-",
+   "angle_deg": 13.5,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "+",
+   "angle_deg": 45.2,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "-",
+   "angle_deg": 45.1,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "+",
+   "angle_deg": 76.5,
+   "breakaway_ma": 125.0
+  },
+  {
+   "joint": "ring_mcp",
+   "direction": "-",
+   "angle_deg": 76.4,
+   "breakaway_ma": 190.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "+",
+   "angle_deg": 15.1,
+   "breakaway_ma": 95.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "-",
+   "angle_deg": 15.3,
+   "breakaway_ma": 90.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "+",
+   "angle_deg": 49.2,
+   "breakaway_ma": 95.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "-",
+   "angle_deg": 49.1,
+   "breakaway_ma": 90.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "+",
+   "angle_deg": 86.1,
+   "breakaway_ma": 100.0
+  },
+  {
+   "joint": "ring_pip",
+   "direction": "-",
+   "angle_deg": 86.1,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "+",
+   "angle_deg": -9.7,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "-",
+   "angle_deg": -9.8,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "+",
+   "angle_deg": -5.8,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "-",
+   "angle_deg": -5.8,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "+",
+   "angle_deg": -1.8,
+   "breakaway_ma": 65.0
+  },
+  {
+   "joint": "pinky_abduction",
+   "direction": "-",
+   "angle_deg": -1.8,
+   "breakaway_ma": 90.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "+",
+   "angle_deg": 13.5,
+   "breakaway_ma": 85.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "-",
+   "angle_deg": 13.5,
+   "breakaway_ma": 75.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "+",
+   "angle_deg": 45.1,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "-",
+   "angle_deg": 45.1,
+   "breakaway_ma": 60.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "+",
+   "angle_deg": 76.5,
+   "breakaway_ma": 70.0
+  },
+  {
+   "joint": "pinky_mcp",
+   "direction": "-",
+   "angle_deg": 76.5,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "+",
+   "angle_deg": 15.1,
+   "breakaway_ma": 40.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "-",
+   "angle_deg": 15.3,
+   "breakaway_ma": 20.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "+",
+   "angle_deg": 49.1,
+   "breakaway_ma": 40.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "-",
+   "angle_deg": 49.1,
+   "breakaway_ma": 35.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "+",
+   "angle_deg": 86.0,
+   "breakaway_ma": 80.0
+  },
+  {
+   "joint": "pinky_pip",
+   "direction": "-",
+   "angle_deg": 86.1,
+   "breakaway_ma": 40.0
+  }
+ ],
+ "table": {
+  "thumb_abduction+": 83.3,
+  "thumb_abduction-": 83.3,
+  "thumb_cmc+": 61.7,
+  "thumb_cmc-": 45.0,
+  "thumb_mcp+": 61.7,
+  "thumb_mcp-": 70.0,
+  "thumb_rotation+": 106.2,
+  "thumb_rotation-": 80.0,
+  "index_mcp+": 65.0,
+  "index_mcp-": 55.0,
+  "index_pip+": 142.5,
+  "index_pip-": 120.0,
+  "index_abduction-": 63.3,
+  "middle_abduction+": 51.7,
+  "middle_abduction-": 68.3,
+  "middle_mcp+": 61.7,
+  "middle_mcp-": 55.0,
+  "middle_pip+": 103.3,
+  "middle_pip-": 135.0,
+  "ring_abduction+": 65.0,
+  "ring_abduction-": 83.3,
+  "ring_mcp+": 91.7,
+  "ring_mcp-": 106.7,
+  "ring_pip+": 96.7,
+  "ring_pip-": 85.0,
+  "pinky_abduction+": 61.7,
+  "pinky_abduction-": 81.7,
+  "pinky_mcp+": 75.0,
+  "pinky_mcp-": 71.7,
+  "pinky_pip+": 53.3,
+  "pinky_pip-": 31.7
+ }
+}
