@@ -2,7 +2,8 @@
 """Friction calibration for torque control, one hand, all three steps in one run (CAN FD, v2 firmware).
 
     1. breakaway  per joint and direction, at several angles: the current at which the joint starts to move
-                  (retargetor/dex-retargetor-cpp/python/friction_breakaway.py)
+                  (retargetor/dex-retargetor-cpp/python/friction_breakaway.py; each current step is held
+                  BREAKAWAY_HOLD_S = 0.1 s here, not the script's own 0.5 s)
     2. tune       per joint: the friction-compensation shares (and kd / dither) with the least stick-slip and
                   error, validated and refined (friction_tune.py)
     3. apply      the results into the hand's CAN FD torque config, hand_config_aac_<l|r>_torque_canfd.json
@@ -10,7 +11,7 @@
 
 The data files are the friction calibration's own (teleop/calibration/acc/friction/aac_*_<side>*.json): each joint
 measured here replaces that joint's earlier result, the other joints keep theirs. Steps 1 and 2 move the hand
-(position homing, then torque mode, one joint at a time): nothing else may use the hand (stop its motor in the GUI).
+(position homing, then torque mode; the joints of a group in parallel, friction_group.py): nothing else may use the hand (stop its motor in the GUI).
 Ctrl-C (the GUI's Stop) zeroes the torque, leaves the hand in position mode where it stands, and skips step 3; the
 progress is saved as a checkpoint (friction_checkpoint_<side>.json): --resume continues with the joint that was
 interrupted (the joints already finished are not redone).
@@ -25,6 +26,8 @@ The GUI's "Calibrate friction" button (the hand's "..." panel) runs this script 
     ... --checkpoint            # show what a stopped run has done
     ... --fine                  # the finer, much slower calibration (friction_fine.py): 10 angles, 2 mA steps,
                                 #   3 readings each; validation at 3 speeds x 2 positions, pass at <= 1.0 deg
+    ... --sequential            # one joint at a time (default: in parallel groups, friction_group.py: the thumb
+                                #   joints alone, the 4 MCPs, the 4 PIPs, index + ring and middle + pinky abduction)
     ... --config teleop/configure/acc/torque_control/hand_config_aac_r_torque_canfd.json --hand_serial AAC-002
 """
 import argparse
@@ -40,6 +43,9 @@ if str(HERE) not in sys.path:
 from friction_canfd import REPO, SCRIPTS, use_canfd  # noqa: E402
 
 SIDES = {"LeftHand": "left", "RightHand": "right"}
+
+
+BREAKAWAY_HOLD_S = 0.1   # breakaway: seconds each current step is held while watching for motion (normal and fine)
 
 
 def side_of(config, serial):
@@ -88,7 +94,8 @@ def describe(ck):
     steps = [] if ck["skip_breakaway"] else [f"breakaway {len(done['breakaway'])}/{len(joints)}"]
     steps.append(f"tune {len(done['tune'])}/{len(joints)}")
     where = f", stopped during {ck['stopped_during']}" if ck.get("stopped_during") else ""
-    return (f"{'FINE' if ck['fine'] else 'normal'} calibration of {len(joints)} joint(s): {', '.join(steps)} done"
+    return (f"{'FINE' if ck['fine'] else 'normal'}{', parallel' if ck.get('grouped') else ''} calibration of "
+            f"{len(joints)} joint(s): {', '.join(steps)} done"
             f"{where}, {minutes(ck.get('elapsed_s', 0.0))} so far")
 
 
@@ -110,6 +117,8 @@ def main(argv=None):
     parser.add_argument("--skip-breakaway", action="store_true", help="step 2 and 3 only, with the saved breakaway")
     parser.add_argument("--no-apply", action="store_true", help="steps 1 and 2 only: do not write the config")
     parser.add_argument("--fine", action="store_true", help="the finer, much slower calibration (friction_fine.py)")
+    parser.add_argument("--sequential", action="store_true",
+                        help="one joint at a time (default: the joints of a group in parallel, friction_group.py)")
     again = parser.add_mutually_exclusive_group()
     again.add_argument("--resume", action="store_true",
                        help="continue the stopped run from its checkpoint (its joints and settings)")
@@ -133,7 +142,8 @@ def main(argv=None):
     if args.resume:
         if args.config and Path(args.config) != Path(ck["config"]) or args.hand_serial and args.hand_serial != ck["serial"]:
             raise SystemExit(f"[friction] the checkpoint is for {ck['config']} / {ck['serial']}, not this hand")
-        if args.joints or args.fine != ck["fine"] or args.skip_breakaway or args.no_apply:
+        if args.joints or args.fine != ck["fine"] or args.skip_breakaway or args.no_apply \
+                or args.sequential != (not ck.get("grouped", False)):
             print("[friction] --resume: continuing with the checkpoint's own joints and settings", flush=True)
         config, serial = ck["config"], ck["serial"]
     else:
@@ -143,6 +153,7 @@ def main(argv=None):
     s, role = use_canfd(config, serial)
     import friction_breakaway                          # both read the CAN FD SIDE now
     import friction_tune
+    friction_breakaway.HOLD = BREAKAWAY_HOLD_S         # each current step held this long (the script's own: 0.5 s)
     names = list(friction_breakaway.JOINT_NAMES)
     if ck is None or args.restart:
         joints = args.joints or names
@@ -150,10 +161,14 @@ def main(argv=None):
         if unknown:
             raise SystemExit(f"unknown joint(s) {', '.join(unknown)}; joints are: {' '.join(names)}")
         ck = dict(version=CHECKPOINT_VERSION, side=side, config=str(s.config.relative_to(REPO)), serial=s.serial,
-                  joints=joints, fine=args.fine, skip_breakaway=args.skip_breakaway, no_apply=args.no_apply,
+                  joints=joints, fine=args.fine, grouped=not args.sequential, skip_breakaway=args.skip_breakaway,
+                  no_apply=args.no_apply,
                   started_at=time.strftime("%Y-%m-%d %H:%M:%S"), elapsed_s=0.0,
                   done={"breakaway": [], "tune": []}, passed={})
     joints, fine = ck["joints"], ck["fine"]
+    grouped = ck.get("grouped", False)                 # (a checkpoint from before the groups: one joint at a time)
+    import friction_group
+    units = friction_group.groups_for(joints) if grouped else [(n,) for n in joints]
     tune = friction_tune.tune_joint
     if fine:
         import friction_fine
@@ -162,8 +177,13 @@ def main(argv=None):
 
     print(f"[friction] {s.side} hand ({s.role}) over CAN FD, config {s.config.relative_to(REPO)}, hand {s.serial}, "
           f"adapter {role['serial_device'].rsplit('/', 1)[-1]}", flush=True)
+    print(f"[friction] breakaway ramp: {friction_breakaway.STEP:g} mA every {friction_breakaway.HOLD:g} s "
+          f"({friction_breakaway.STEP / friction_breakaway.HOLD:g} mA/s), from {friction_breakaway.START:g} mA, "
+          f"up to {friction_breakaway.MAX:g} mA", flush=True)
     if args.resume:
         print(f"[friction] CONTINUING: {describe(ck)}", flush=True)
+    if grouped:
+        print("[friction] in parallel: " + " | ".join(" + ".join(g) for g in units), flush=True)
     print(f"[friction] {'FINE calibration, ' if fine else ''}{len(joints)} joint(s): {' '.join(joints)}. "
           "Keep clear of the fingers; Ctrl-C stops (progress is kept: continue with --resume).", flush=True)
     start, before = time.monotonic(), float(ck.get("elapsed_s", 0.0))
@@ -182,20 +202,32 @@ def main(argv=None):
 
     save_checkpoint(side, ck)
     try:
+        # a group of several joints runs them in parallel (friction_group.py); a single joint the step scripts' way
         if not ck["skip_breakaway"]:
-            for k, name in enumerate(joints, 1):
-                if name in ck["done"]["breakaway"]:
+            for k, group in enumerate(units, 1):
+                todo = [n for n in group if n not in ck["done"]["breakaway"]]
+                if not todo:
                     continue
-                current = f"breakaway {name}"
-                print(f"\n[friction] step 1/3 breakaway: {name} ({k}/{len(joints)}, {stamp()})", flush=True)
-                friction_breakaway.main([name])
-                finished("breakaway", name)
-        for k, name in enumerate(joints, 1):
-            if name in ck["done"]["tune"]:
+                current = f"breakaway {' + '.join(todo)}"
+                print(f"\n[friction] step 1/3 breakaway: {' + '.join(todo)} ({k}/{len(units)}, {stamp()})", flush=True)
+                if len(todo) > 1:
+                    friction_group.breakaway_group(friction_breakaway, todo, fine=fine)
+                else:
+                    friction_breakaway.main(todo)
+                for name in todo:
+                    finished("breakaway", name)
+        for k, group in enumerate(units, 1):
+            todo = [n for n in group if n not in ck["done"]["tune"]]
+            if not todo:
                 continue
-            current = f"tune {name}"
-            print(f"\n[friction] step 2/3 tune: {name} ({k}/{len(joints)}, {stamp()})", flush=True)
-            finished("tune", name, tune(name).get("passed"))
+            current = f"tune {' + '.join(todo)}"
+            print(f"\n[friction] step 2/3 tune: {' + '.join(todo)} ({k}/{len(units)}, {stamp()})", flush=True)
+            if len(todo) > 1:
+                results = friction_group.tune_group(friction_tune, todo, fine=fine)
+                for name in todo:
+                    finished("tune", name, results[name].get("passed"))
+            else:
+                finished("tune", todo[0], tune(todo[0]).get("passed"))
         current = None
     except BaseException as exc:                       # Ctrl-C / Stop, or an error: keep the progress
         ck["elapsed_s"] = before + time.monotonic() - start

@@ -210,10 +210,10 @@ class DevPage(QWidget):
             speed.addWidget(self._label("WiLoR speed (GPU)", "font-size: 16px; color: #222; font-weight: 600;"))
             speed.addWidget(self._label(
                 "Fast: 16-bit numbers (half precision); WiLoR also skips 5 of the 32 layers of its backbone, as WiLoR's "
-                "own --fast does (WiLoR-mini: half precision only). It helps only on a slower GPU (the model's time per "
-            "frame is in the log; on an RTX 3080 both keep up with the camera's 30 fps) and may cost some accuracy. Full "
-                "precision: 32-bit, the whole model, as WiLoR runs by default. On the CPU it is always full precision. "
-                "Changing it restarts the camera.", TEXT_STYLE))
+                "own --fast does (WiLoR-mini: half precision only); may cost some accuracy. Full precision: 32-bit, the "
+                "whole model, as WiLoR runs by default, but slower: on an RTX 3080 laptop with a hand in view about 13-16 "
+                "fps against 19-22 in Fast, and Align needs 15 frames in its one second. On the CPU it is always full "
+                "precision. Changing it restarts the camera.", TEXT_STYLE))
             toggle = QHBoxLayout()
             toggle.setSpacing(0)
             self.wilor_fast_buttons = {}

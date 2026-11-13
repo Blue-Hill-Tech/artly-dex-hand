@@ -17,6 +17,11 @@ Step 2, tune (fine_tune_joint):
     home spread only): the worst of the 6 runs decides, so a setting must work slow, fast and at both ends.
   - passes only with a mean error <= 1.0 deg (normal: 1.5); peak error, slip speed and aborts as before.
   - refine in steps of 0.05 (normal 0.1), up to 5 rounds (normal 3), each round at the condition that failed worst.
+  - after a refinement only that condition is run again (RE-CHECK); all conditions are validated again only once it
+    passes there, so a PASS always stands on a full validation of the final setting.
+  - the rounds end early when a refinement found no better setting, or improved the worst condition by too little
+    to pass in the rounds left (give_up): such rounds only repeated the same failure (2026-11-12, right thumb:
+    6 full validations each, worst error 2.4 -> 2.2 -> 2.4 deg against the 1.0 limit, 9 min per joint).
 """
 import json
 import statistics
@@ -136,6 +141,55 @@ def worst_of(runs):
     return worst
 
 
+def setting_of(r):
+    """The setting (error share, feed-forward share, kd, dither) a run was made with."""
+    return (r["err_share"], r["ff_share"], r.get("kd"), r.get("dither"))
+
+
+def excess(ft, r):
+    """How far a run is outside the pass limits; 0 when it passes. Each limit's overshoot as a fraction of the limit
+    (mean error, peak error, slip speed), plus 1 for an abort."""
+    return (max(0.0, r["err"] - ft.ERR_OK) / ft.ERR_OK + max(0.0, r["err_max"] - ft.ERR_MAX_OK) / ft.ERR_MAX_OK
+            + max(0.0, r["vel_p95"] - ft.VEL_OK) / ft.VEL_OK + (1.0 if r["aborted"] else 0.0))
+
+
+def give_up(before, after, rounds_left):
+    """After a refinement and the re-check of the worst condition: (stop, why). before / after: excess() there with
+    the setting before and after the refinement. Stops when it did not get better, or when it got better by so
+    little that as much again in every round left would still not pass."""
+    gain = before - after
+    if gain <= 0.0:
+        return True, "the refinement did not improve the worst condition"
+    if after > gain * rounds_left:
+        return True, f"improving too slowly to pass in the {rounds_left} round(s) left"
+    return False, ""
+
+
+def candidates_around(best, tried):
+    """Up to 3 settings one REFINE step from `best` that are not in `tried`."""
+    es0, ff0, kd, dither = best
+    nudges = ((0, REFINE), (0, -REFINE), (-REFINE, REFINE), (REFINE, 0))
+    out = [(round(es0 + de, 2), round(ff0 + df, 2), kd, dither) for de, df in nudges]
+    return [c for c in out if 0 <= c[0] <= 0.6 and 0 <= c[1] <= 1.0 and c not in tried][:3]
+
+
+def worst_run(ft, latest, best):
+    """The run to refine at: the worst-scoring one among those measured with `best` (after a failed re-check that is
+    the re-checked condition: the other conditions' runs are still the previous setting's)."""
+    return max((r for r in latest.values() if setting_of(r) == best), key=ft.score)
+
+
+def final_of(latest, best):
+    """The validation result to report for `best`: the worst over the conditions measured with it (all of them after
+    a full validation; only the re-checked one when the rounds ended on a failed re-check)."""
+    return worst_of([r for r in latest.values() if setting_of(r) == best])
+
+
+def fully_passed(ft, final, conditions):
+    """Passed, and on a validation of every condition."""
+    return bool(final is not None and ft.passed(final) and len(final["conditions"]) == len(conditions))
+
+
 def fine_tune_joint(ft, name):
     """friction_tune.tune_joint with the fine validation and refinement. Writes the same result entry."""
     ft.ERR_OK = ERR_OK
@@ -158,40 +212,67 @@ def fine_tune_joint(ft, name):
             if r["aborted"] and name not in ft.SPECIAL and r["ff_share"] >= 0.7:
                 break
         best = min(tried, key=lambda k: ft.score(tried[k]))
-        final = None
-        for rnd in range(ROUNDS + 1):
-            runs = []
+
+        def validate_all():
+            """Every condition with `best`; returns {condition: run}."""
+            runs = {}
             for speed, centre in conditions:
                 v = run_at(ft, s, best, speed, centre, secs=8.0, hold=2.0)
-                runs.append(v)
+                runs[(speed, centre)] = v
                 log.append(dict(v, validation=True))
                 print(f"  {name:16s} VALIDATE {speed:4.0f} deg/s @ {centre:5.1f} {shares(best)}: {ft.fmt(v)}", flush=True)
-            final = worst_of(runs)
-            ok = ft.passed(final)
+            return runs
+
+        def report(final, verdict):
             print(f"  {name:16s} worst: |err| {final['err']:.1f} max {final['err_max']:.1f} vel {final['vel_p95']:.0f}"
-                  f"{' ABORT' if final['aborted'] else ''}  -> {'PASS' if ok else 'refine' if rnd < ROUNDS else 'FAIL'}",
-                  flush=True)
-            if ok or rnd == ROUNDS:
-                break
+                  f"{' ABORT' if final['aborted'] else ''}  -> {verdict}", flush=True)
+
+        latest = validate_all()
+        final = final_of(latest, best)
+        rounds_left = ROUNDS
+        report(final, "PASS" if fully_passed(ft, final, conditions) else "refine" if rounds_left else "FAIL")
+        while not fully_passed(ft, final, conditions) and rounds_left > 0:
             # refine at the condition that failed worst: the current best there against small nudges
-            bad = max(runs, key=ft.score)
-            speed, centre = bad["speed"], bad["centre"]
+            bad = worst_run(ft, latest, best)
+            condition = (bad["speed"], bad["centre"])
+            before = excess(ft, bad)
             here = {best: bad}
-            es0, ff0, kd, dither = best
-            nudges = ((0, REFINE), (0, -REFINE), (-REFINE, REFINE), (REFINE, 0))
-            candidates = [(round(es0 + de, 2), round(ff0 + df, 2), kd, dither) for de, df in nudges]
-            candidates = [c for c in candidates if 0 <= c[0] <= 0.6 and 0 <= c[1] <= 1.0 and c not in here][:3]
-            for c in candidates:
-                r = run_at(ft, s, c, speed, centre)
+            for c in candidates_around(best, here):
+                r = run_at(ft, s, c, *condition)
                 here[c] = r
                 log.append(r)
-                print(f"  {name:16s} refine   {speed:4.0f} deg/s @ {centre:5.1f} {shares(c)}: {ft.fmt(r)}", flush=True)
-            best = min(here, key=lambda k: ft.score(here[k]))
+                print(f"  {name:16s} refine   {condition[0]:4.0f} deg/s @ {condition[1]:5.1f} {shares(c)}: {ft.fmt(r)}",
+                      flush=True)
+            rounds_left -= 1
+            new = min(here, key=lambda k: ft.score(here[k]))
+            if new == best:
+                print(f"  {name:16s} -> FAIL: no setting one step away was better at "
+                      f"{condition[0]:g} deg/s @ {condition[1]:g}; rounds ended early", flush=True)
+                break
+            best = new
+            # only that condition again; every condition once it passes there
+            check = run_at(ft, s, best, *condition, secs=8.0, hold=2.0)
+            log.append(dict(check, validation=True, recheck=True))
+            latest[condition] = check
+            print(f"  {name:16s} RE-CHECK {condition[0]:4.0f} deg/s @ {condition[1]:5.1f} {shares(best)}: {ft.fmt(check)}",
+                  flush=True)
+            if ft.passed(check):
+                latest = validate_all()
+                final = final_of(latest, best)
+                report(final, "PASS" if fully_passed(ft, final, conditions) else "refine" if rounds_left else "FAIL")
+                continue
+            final = final_of(latest, best)
+            stop, why = give_up(before, excess(ft, check), rounds_left)
+            if stop or rounds_left == 0:
+                report(final, "FAIL: " + (why if stop else "no rounds left") + ("; rounds ended early" if stop else ""))
+                break
+            report(final, "refine")
     finally:
         s.close()
     ft.home()
     result = dict(joint=name, err_share=best[0], ff_share=best[1], kd=best[2], dither=best[3], validation=final,
-                  passed=ft.passed(final), runs=log, fine=True)
+                  passed=fully_passed(ft, final, conditions), validated_conditions=len(final["conditions"]),
+                  conditions=len(conditions), runs=log, fine=True)
     data = json.loads(ft.OUT.read_text()) if ft.OUT.exists() else {}
     data[name] = result
     ft.OUT.write_text(json.dumps(data, indent=1) + "\n")
