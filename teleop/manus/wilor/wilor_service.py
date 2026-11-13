@@ -7,7 +7,8 @@ Runs in WiLoR's own environment (CUDA torch and WiLoR's pinned packages stay out
 teleop/manus/wilor/wilor_source.py starts it and reads it (the GUI's WiLoR mode). Each message (JSON, PUB):
     {type: "wilor_hands", seq, t (time.time() of the camera frame), width, height,
      hands: [{side, score, joints (21 x 3, m, wrist at 0, camera axes), image (21 x 2 px)}]}
-Prints "WILOR READY <address>" once the model is loaded and the camera is open.
+Prints "WILOR DEVICE {device, fast, name | reason}" (GPU or CPU, JSON) and then "WILOR READY <address>" once the
+model is loaded and the camera is open.
 """
 import argparse
 import json
@@ -58,6 +59,19 @@ class LatestFrame:
         self.thread.join(timeout=1.0)
 
 
+def device_info(tracker):
+    """Where the model runs, for the GUI (Dev Mode shows it): {device: "cuda"|"cpu", fast, name | reason}."""
+    import torch
+    info = dict(device=tracker.device.type, fast=bool(tracker.fast))
+    if tracker.device.type == "cuda":
+        info["name"] = torch.cuda.get_device_name(tracker.device)
+    elif torch.version.cuda is None:
+        info["reason"] = "this torch build has no CUDA support"
+    else:
+        info["reason"] = (f"no usable NVIDIA GPU (none found, or its driver is too old for CUDA {torch.version.cuda})")
+    return info
+
+
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--address", default=DEFAULT_ADDRESS, help="ZMQ PUB address to bind")
@@ -104,6 +118,7 @@ def main(argv=None):
         tracker(bgr)                                     # warm-up (CUDA kernels), not published
     camera = LatestFrame(capture)
     last_frame = 0
+    print("WILOR DEVICE " + json.dumps(device_info(tracker)), flush=True)
     print(f"WILOR READY {args.address}: {args.tracker} on {tracker.device} ({'fast' if tracker.fast else 'full'})",
           flush=True)
     seq, last_report, frames, spent = 0, time.perf_counter(), 0, 0.0

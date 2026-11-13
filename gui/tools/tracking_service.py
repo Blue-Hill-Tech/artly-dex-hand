@@ -15,6 +15,7 @@ Two local ZMQ sockets, bound on free ports and announced on stdout once the serv
 
 state (PUB, PUBLISH_HZ): the whole state as one JSON snapshot each time (a late reader just takes the newest):
     {type: "tracking", t, source, phase: "starting"|"searching"|"ready"|"failed", error,
+     compute: {device: "cuda"|"cpu", fast, name | reason} | null   (WiLoR: where its model runs, once it is up),
      found: {Left: glove id | null, Right: ...},
      sides: {Left: {connected, pose: [16 SDK degrees] | null, skeleton: {points, segments} | null, status,
                     alignment: "none"|"collecting"|"ok"|null, motor: bool, error}, Right: {...}}}
@@ -71,6 +72,7 @@ class TrackingService(QObject):
         self.workers = {}                                        # side -> GloveWorker
         self.found = dict.fromkeys(SIDES)
         self.phase, self.error = "starting", None
+        self.compute = None                                      # WiLoR: where its model runs (the source reports it)
         self.auto = dict.fromkeys(SIDES, True)                   # connect a side as soon as its hand is found
         self.motor_sockets = {}                                  # side -> sockets while its motor runs
         self.want_skeleton = dict.fromkeys(SIDES, True)
@@ -94,6 +96,7 @@ class TrackingService(QObject):
         if hub is not self.hub:
             return
         self.phase = "searching"
+        self.compute = getattr(hub._source, "device_info", None)
         QTimer.singleShot(int(SEARCH_GRACE_S * 1000), lambda: self._search_settled(hub))
         self.changed.emit()
 
@@ -228,7 +231,7 @@ class TrackingService(QObject):
             state["motor"] = bool(worker is not None and worker.isRunning() and worker.motor_attached)
             sides[side] = state
         return dict(type="tracking", t=time.time(), source=self.source, phase=self.phase, error=self.error,
-                    found=dict(self.found), sides=sides)
+                    compute=self.compute, found=dict(self.found), sides=sides)
 
     def shutdown(self):
         """Idle every controller session, stop the workers, then the source."""

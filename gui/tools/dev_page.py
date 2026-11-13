@@ -45,6 +45,10 @@ SECTION_STYLE = "font-size: 19px; color: #222; font-weight: 600;"
 TEXT_STYLE = "font-size: 15px; color: #5E584A;"
 SMALL_STYLE = "font-size: 13px; color: #8A8472;"
 WARNING_STYLE = "font-size: 15px; color: #B5452F;"
+_NOTE = "font-size: 15px; border-radius: 10px; padding: 8px 12px; "
+COMPUTE_STYLES = {"info": _NOTE + "color: #5E584A; background: #F3EFE2; border: 1px solid #E4DFCD;",
+                  "ok": _NOTE + "color: #2F6B3A; background: #E7F2E4; border: 1px solid #C5DEC0;",
+                  "warning": _NOTE + "color: #B5452F; background: #FBE9E3; border: 1px solid #F0C9BD;"}
 BACK_STYLE = """
 QPushButton { border: 1px solid #D9D3BF; border-radius: 17px; background: #F3EFE2; color: #222; font-size: 16px;
               padding: 6px 22px; }
@@ -190,6 +194,12 @@ class DevPage(QWidget):
                 self.pipeline_buttons[key] = button
             segments.addStretch(1)
             body.addLayout(segments)
+            # WiLoR: whether its model runs on the GPU or the CPU (MainPage.compute_notice)
+            body.addSpacing(8)
+            self.compute_label = self._label("", COMPUTE_STYLES["info"])
+            self.compute_label.setTextFormat(Qt.PlainText)
+            self.compute_label.hide()
+            body.addWidget(self.compute_label)
             self.set_pipeline(pipeline)
 
         # GeoRT models
@@ -499,6 +509,15 @@ class DevPage(QWidget):
     def set_pipeline(self, pipeline):
         if pipeline in self.pipeline_buttons:
             self.pipeline_buttons[pipeline].setChecked(True)
+
+    def set_compute_notice(self, text, kind="info"):
+        """The note under the camera pipeline (WiLoR: GPU or CPU); hidden when empty."""
+        label = getattr(self, "compute_label", None)
+        if label is None:
+            return
+        label.setText(text)
+        label.setStyleSheet(COMPUTE_STYLES.get(kind, COMPUTE_STYLES["info"]))
+        label.setVisible(bool(text))
 
     # --- motor gains -------------------------------------------------------------------------------------------------
     def _show_gains(self, side):

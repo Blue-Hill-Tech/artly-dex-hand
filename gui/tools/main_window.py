@@ -688,6 +688,33 @@ class MainPage(QWidget):
         self.settings.setValue("camera_pipeline", pipeline)
         self._switch(self.mode, pipeline)
 
+    def compute_notice(self):
+        """Dev Mode's note under the camera pipeline: where WiLoR runs (GPU or CPU). (text, kind "info"|"ok"|"warning");
+        ("", "info") when the chosen pipeline is not a WiLoR one."""
+        if self.pipeline not in ("wilor", "wilor_mini"):
+            return "", "info"
+        name = PIPELINES[self.pipeline]
+        if self.mode != "camera":
+            return f"{name} starts when the Camera mode is on; whether it runs on the GPU or the CPU shows here then.", "info"
+        snapshot = self.snapshot
+        if snapshot is None or snapshot.get("source") != self.source or snapshot.get("phase") == "starting":
+            return f"{name} is starting (loading the model) ... GPU or CPU shows here once it runs.", "info"
+        if snapshot.get("phase") == "failed":
+            error = (snapshot.get("error") or "unknown error").strip().splitlines()[-1][:200]
+            return f"{name} did not start: {error}", "warning"
+        compute = snapshot.get("compute")
+        if not compute:
+            return f"{name} is running (it did not say whether on the GPU or the CPU; see the log).", "info"
+        if compute.get("device") == "cuda":
+            mode = "fast mode, half precision" if compute.get("fast") else "full precision"
+            return f"{name} is running on the GPU: {compute.get('name') or 'NVIDIA GPU'} ({mode}).", "ok"
+        return (f"{name} is running on the CPU: {compute.get('reason') or 'no GPU'}. It is slow there, far below the "
+                f"camera's 30 fps; MediaPipe is the better choice on this computer."), "warning"
+
+    def _show_compute_notice(self):
+        if self.dev_page is not None:
+            self.dev_page.set_compute_notice(*self.compute_notice())
+
     # --- each hand's adapter (Dev Mode) -------------------------------------------------------------------------------
     def _saved_adapter(self, side):
         """This hand's default adapter: None when saved as not used ("none"), otherwise the one in the hand's config
@@ -855,6 +882,7 @@ class MainPage(QWidget):
         motor stays on (idle) and is driven again once the hand is found on the new source."""
         before = self.source
         self.mode, self.pipeline = mode, pipeline
+        self._show_compute_notice()
         if self.source == before:                               # e.g. a new pipeline chosen in glove mode
             return
         for panel in self.panels.values():                       # no pose left over from the other source
@@ -886,6 +914,7 @@ class MainPage(QWidget):
         self.link_error = f"tracking service exited (code {code})"
         print(f"[gui] {self.link_error}", flush=True)
         self.snapshot = None
+        self._show_compute_notice()
         for side in self.panels:
             self._refresh_glove(side)
 
@@ -911,6 +940,9 @@ class MainPage(QWidget):
         if link is not self.link or self.pending_source is not None:   # the old service, on its way out
             return
         previous, self.snapshot = self.snapshot, snapshot
+        if previous is None or (previous.get("phase"), previous.get("compute")) != (snapshot.get("phase"),
+                                                                                  snapshot.get("compute")):
+            self._show_compute_notice()
         if snapshot.get("source") == "glove" and snapshot.get("phase") == "failed":
             self._glove_failed(snapshot.get("error"))
         for side in self.panels:
@@ -1398,6 +1430,7 @@ class MainWindow(QMainWindow):
         page.gains_changed.connect(self.page.set_gains)
         page.gains_save_requested.connect(self.page.save_gains)
         self.page.dev_page = page
+        page.set_compute_notice(*self.page.compute_notice())
         return page
 
     def show_dev(self):

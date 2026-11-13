@@ -57,6 +57,7 @@ class WilorSource:
         self.process = self.thread = self.reader = None
         self.output = deque(maxlen=40)
         self.ready = threading.Event()
+        self.device_info = None                          # the service's "WILOR DEVICE": where the model runs
         self.stats = dict(messages=0, hands=0)
 
     # --- interface ----------------------------------------------------------------------------------------------
@@ -168,6 +169,11 @@ class WilorSource:
             line = line.rstrip()
             self.output.append(line)
             print(f"[wilor] {line}", flush=True)
+            if line.startswith("WILOR DEVICE "):
+                try:
+                    self.device_info = json.loads(line[len("WILOR DEVICE "):])
+                except ValueError:
+                    pass
             if line.startswith("WILOR READY"):
                 self.ready.set()
 
