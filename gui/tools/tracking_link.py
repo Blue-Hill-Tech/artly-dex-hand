@@ -73,18 +73,20 @@ class TrackingLink(QObject):
     def running(self):
         return self.process.state() != QProcess.NotRunning
 
-    def command(self, source, fake_sides=None, checkpoints=None):
+    def command(self, source, fake_sides=None, checkpoints=None, wilor_fast=True):
         """checkpoints: {(source group, side): GeoRT run name or None (newest)} to use instead of the saved selection."""
         arguments = [sys.executable, "-u", str(SERVICE), "--source", source]
         if fake_sides:
             arguments += ["--fake-sides", ",".join(fake_sides)]
+        if not wilor_fast:
+            arguments.append("--wilor-full")
         if checkpoints is not None:
             arguments += ["--checkpoints", json.dumps({f"{group}/{side}": run for (group, side), run in checkpoints.items()})]
         return arguments
 
-    def start(self, source, fake_sides=None, checkpoints=None):
+    def start(self, source, fake_sides=None, checkpoints=None, wilor_fast=True):
         self.source = source
-        program, *arguments = self.command(source, fake_sides, checkpoints)
+        program, *arguments = self.command(source, fake_sides, checkpoints, wilor_fast)
         self.process.start(program, arguments)
 
     def send(self, **command):

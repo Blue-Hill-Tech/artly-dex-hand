@@ -104,6 +104,7 @@ class DevPage(QWidget):
     pipeline_changed = pyqtSignal(str)          # a PIPELINES key
     adapter_changed = pyqtSignal(str, object)   # side, adapter path or None (the hand is not used)
     tip_stop_changed = pyqtSignal(bool)         # the torque demo's fingertip-distance safety stop on / off
+    wilor_fast_changed = pyqtSignal(bool)       # WiLoR on the GPU: fast mode (True) or full precision
     friction_fine_changed = pyqtSignal(bool)    # Calibrate friction: the fine calibration (True) or the normal one
     save_requested = pyqtSignal()               # Save: make the chosen adapters the hands' defaults
     gains_changed = pyqtSignal(str, float, float)   # side, kp, kd (from the next motor start)
@@ -112,7 +113,8 @@ class DevPage(QWidget):
     checkpoints_save_requested = pyqtSignal()   # Save: make the chosen GeoRT runs the defaults
 
     def __init__(self, corner, pipelines, pipeline, adapters, defaults, list_adapters, tip_stop=True,
-                 pins=None, list_runs=None, gains=None, gain_overrides=None, friction_fine=False, parent=None):
+                 pins=None, list_runs=None, gains=None, gain_overrides=None, friction_fine=False,
+                 wilor_fast=True, parent=None):
         """pins: {(source group, side): GeoRT run name} chosen now (missing = newest); list_runs(side): the runs
         (teleop/manus/geort/checkpoints.list_runs)."""
         """corner: the window buttons; pipelines: {key: name}; adapters: {side: path or None} (current choice);
@@ -200,6 +202,38 @@ class DevPage(QWidget):
             self.compute_label.setTextFormat(Qt.PlainText)
             self.compute_label.hide()
             body.addWidget(self.compute_label)
+            # WiLoR on the GPU: fast mode or full precision (shown while a WiLoR pipeline is chosen)
+            self.wilor_speed = QWidget()
+            speed = QVBoxLayout(self.wilor_speed)
+            speed.setContentsMargins(0, 14, 0, 0)
+            speed.setSpacing(8)
+            speed.addWidget(self._label("WiLoR speed (GPU)", "font-size: 16px; color: #222; font-weight: 600;"))
+            speed.addWidget(self._label(
+                "Fast: 16-bit numbers (half precision); WiLoR also skips 5 of the 32 layers of its backbone, as WiLoR's "
+                "own --fast does (WiLoR-mini: half precision only). It helps only on a slower GPU (the model's time per "
+            "frame is in the log; on an RTX 3080 both keep up with the camera's 30 fps) and may cost some accuracy. Full "
+                "precision: 32-bit, the whole model, as WiLoR runs by default. On the CPU it is always full precision. "
+                "Changing it restarts the camera.", TEXT_STYLE))
+            toggle = QHBoxLayout()
+            toggle.setSpacing(0)
+            self.wilor_fast_buttons = {}
+            fast_group = QButtonGroup(self)
+            fast_group.setExclusive(True)
+            for value, text, name in ((True, "Fast", "first"), (False, "Full precision", "last")):
+                button = QPushButton(text)
+                button.setCheckable(True)
+                button.setCursor(Qt.PointingHandCursor)
+                button.setObjectName(name)
+                button.setStyleSheet(SEGMENT_STYLE + "QPushButton { min-width: 80px; }")
+                button.clicked.connect(lambda _=False, value=value: self._wilor_fast_picked(value))
+                fast_group.addButton(button)
+                toggle.addWidget(button)
+                self.wilor_fast_buttons[value] = button
+            toggle.addStretch(1)
+            speed.addLayout(toggle)
+            body.addWidget(self.wilor_speed)
+            self.wilor_fast = None
+            self.set_wilor_fast(wilor_fast)
             self.set_pipeline(pipeline)
 
         # GeoRT models
@@ -509,6 +543,18 @@ class DevPage(QWidget):
     def set_pipeline(self, pipeline):
         if pipeline in self.pipeline_buttons:
             self.pipeline_buttons[pipeline].setChecked(True)
+        speed = getattr(self, "wilor_speed", None)
+        if speed is not None:
+            speed.setVisible(pipeline in ("wilor", "wilor_mini"))
+
+    def set_wilor_fast(self, on):
+        self.wilor_fast = bool(on)
+        self.wilor_fast_buttons[self.wilor_fast].setChecked(True)
+
+    def _wilor_fast_picked(self, on):
+        if on != self.wilor_fast:
+            self.wilor_fast = on
+            self.wilor_fast_changed.emit(on)
 
     def set_compute_notice(self, text, kind="info"):
         """The note under the camera pipeline (WiLoR: GPU or CPU); hidden when empty."""

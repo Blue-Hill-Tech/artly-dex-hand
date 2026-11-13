@@ -31,6 +31,7 @@ if str(ROOT) not in sys.path:
 
 ALIGNMENT = ROOT / "teleop" / "manus" / "alignment" / "aac_alignment_{side}{suffix}.json"   # suffix "_camera" for the camera
 CAMERA_TUNING = ROOT / "teleop" / "manus" / "parameters" / "retarget_tuning_camera.yaml"
+ALIGN_FAILED_SHOW_S = 10.0    # how long the status line says why the last Align did not take
 CAMERA_CAPTURE_FRAMES = 15   # the sender's alignment capture for the camera (~30 fps), instead of the glove's 30
 MODES = ("glove", "camera", "wilor", "wilor_mini")
 CAMERA_MODES = ("camera", "wilor", "wilor_mini")   # webcam trackers: camera settings, own alignment file, align()
@@ -54,8 +55,9 @@ class GloveWorker(QThread):
     failed = pyqtSignal(str)       # the thread stopped on an error
     alignment = pyqtSignal(str)    # "none" (needs align()), "collecting", "ok"; on every change
 
-    def __init__(self, side, parent=None, hub=None, mode="glove"):
+    def __init__(self, side, parent=None, hub=None, mode="glove", wilor_fast=True):
         super().__init__(parent)
+        self.wilor_fast = bool(wilor_fast)               # WiLoR's fast mode on the GPU (Dev Mode)
         if mode not in MODES:
             raise ValueError(f"mode must be one of {MODES}")
         self.side = side.capitalize()
@@ -138,7 +140,7 @@ class GloveWorker(QThread):
             source = load_camera_source(SimpleNamespace(), [self.side])
         elif self.mode in ("wilor", "wilor_mini"):
             from teleop.manus.wilor.wilor_source import load_wilor_source
-            source = load_wilor_source([self.side], tracker=self.mode)
+            source = load_wilor_source([self.side], tracker=self.mode, fast=self.wilor_fast)
         else:
             source = load_source()
         reported_alignment = None
@@ -149,6 +151,7 @@ class GloveWorker(QThread):
         pending_attach, attach_at = None, 0.0
         last_execute_try = last_pose = last_status = 0.0
         flat_wait = False                # MediaPipe: Align waits for the flat-hand capture
+        self.align_failed = None         # (why, when): the last Align that did not take, shown for ALIGN_FAILED_SHOW_S
         try:
             if self.hub is None:                           # no shared connection: this worker owns the SDK
                 self.status.emit("Connecting to the camera ..." if self.mode in CAMERA_MODES else
@@ -224,6 +227,11 @@ class GloveWorker(QThread):
                     path = self.alignment_path()
                     calibration = save_alignment(path, engine, locked)  # the new alignment, also for re-installs
                     self.status.emit(f"Alignment saved to {path.name}")
+                    self.align_failed = None
+                elif collecting and engine.collection is None:
+                    # The capture ended without an alignment. The engine's reason is overwritten by the next good
+                    # frame ("Press A ..."), so it is kept here, shown in the status line and logged.
+                    self._align_not_taken(engine, source, now)
                 state = "collecting" if flat_wait or engine.collection is not None else "ok" if engine.alignment is not None \
                     else "ok" if calibration is not None else "none"
                 if state != reported_alignment:
@@ -298,6 +306,29 @@ class GloveWorker(QThread):
                                        point=lambda poses, link: adapter.link_point(poses, link, offsets.get(link)))
         return view
 
+    def _align_not_taken(self, engine, source, now):
+        from teleop.manus.tools.dex_vector_retargeting import ALIGN_MOTION_DEG, ALIGN_MOTION_M
+        from teleop.manus.tools.skeleton_source import STALE_S
+        failure = next((e for e in reversed(engine.events) if e.get("outcome") == "failure"), {})
+        why = str(failure.get("reason") or engine.reason or "unknown reason").replace("; press A again", "")
+        if why.startswith("Stale/missing skeleton"):
+            why = f"the hand was not tracked for over {STALE_S:g} s during the capture"
+        elif why.startswith("Moving alignment"):
+            why = (f"the hand moved too much ({why[len('Moving alignment'):].strip(' :')}; "
+                   f"limit {ALIGN_MOTION_M * 1000:g} mm / {ALIGN_MOTION_DEG:g} deg)")
+        elif why.startswith("Alignment needs at least"):
+            why = (f"too few camera frames ({failure.get('count', '?')} of the {engine.min_capture_frames} needed "
+                   f"in the second)") if hasattr(engine, "min_capture_frames") else why
+        detail = f"{failure.get('count', '?')} frames captured"
+        seen = getattr(source, "seen", None)
+        if seen is not None and failure.get("started") is not None:
+            try:
+                detail += "; " + seen(self.side, failure["started"], now)
+            except Exception:
+                pass
+        self.align_failed = (why, now)
+        print(f"[{self.side.lower()} {self.mode}] Align did not take: {why} ({detail})", flush=True)
+
     def _attach(self, adapter, evidence, sockets):
         """The sender session on the controller's sockets, or None while the controller does not answer yet."""
         from teleop.manus.stream.hand_stream_aac import AACConnection, AACSession
@@ -316,7 +347,13 @@ class GloveWorker(QThread):
                                                                else "MANUS glove ...")
         glove = (f"Camera: {sample.get('state')}" if self.mode in CAMERA_MODES
                  else f"Glove {locked:08X}: {sample.get('state')}")
-        if sample.get("reason"):
+        failed = self.align_failed
+        if failed is not None and time.perf_counter() - failed[1] < ALIGN_FAILED_SHOW_S:
+            if sample.get("state") == "awaiting alignment":
+                glove = f"Align did not take: {failed[0]}. Hold the hand flat and still, then click Align again"
+            else:
+                glove += f" (Align did not take: {failed[0]}; the saved alignment is still used)"
+        elif sample.get("reason"):
             glove += f" ({sample['reason']})"
         if session is None:
             return glove + (" - motor: waiting for the controller to start" if pending_attach else " - model only")

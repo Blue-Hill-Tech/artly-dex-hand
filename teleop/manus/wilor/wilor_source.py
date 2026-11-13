@@ -59,6 +59,7 @@ class WilorSource:
         self.ready = threading.Event()
         self.device_info = None                          # the service's "WILOR DEVICE": where the model runs
         self.stats = dict(messages=0, hands=0)
+        self.labels = deque(maxlen=600)                   # (received, sides WiLoR reported in that camera frame)
 
     # --- interface ----------------------------------------------------------------------------------------------
     def start_check(self):
@@ -143,6 +144,24 @@ class WilorSource:
         devices = {WILOR_GLOVE_ID[s]: dict(side=s, family="Camera", device_class="WiLoR") for s in self.sides}
         return frames, devices
 
+    def seen(self, side, since, until=None):
+        """How WiLoR saw `side` in the camera frames from `since` (perf_counter) on: one line, e.g. "the right hand in
+        21 of 30 camera frames, labelled left in 9" (for a failed Align)."""
+        until = time.perf_counter() if until is None else until
+        frames = [labels for t, labels in list(self.labels) if since <= t <= until]
+        if not frames:
+            return "no camera frames from WiLoR during the capture"
+        other = "Left" if side == "Right" else "Right"
+        found = sum(side in labels for labels in frames)
+        swapped = sum(side not in labels and other in labels for labels in frames)
+        none = sum(not labels for labels in frames)
+        text = f"WiLoR saw the {side.lower()} hand in {found} of {len(frames)} camera frames"
+        if swapped:
+            text += f", labelled {other.lower()} in {swapped}"
+        if none:
+            text += f", no hand in {none}"
+        return text
+
     def metadata(self, glove_id):
         side = next(s for s, gid in WILOR_GLOVE_ID.items() if gid == glove_id)
         return metadata(side)
@@ -189,6 +208,8 @@ class WilorSource:
                 # age of the camera frame, carried over to this process's clock
                 received = time.perf_counter() - max(0.0, time.time() - float(message["t"]))
                 self.stats["messages"] += 1
+                self.labels.append((received, [hand["side"] for hand in message["hands"]
+                                               if hand["score"] >= self.min_score]))
                 best = {}
                 for hand in message["hands"]:
                     if hand["side"] in self.sides and hand["score"] >= self.min_score:

@@ -80,6 +80,11 @@ MODES = {"glove": "Glove", "camera": "Camera"}
 PIPELINES = {"mediapipe": "MediaPipe", "wilor": "WiLoR", "wilor_mini": "WiLoR-mini"}
 PIPELINE_SOURCE = {"mediapipe": "camera", "wilor": "wilor", "wilor_mini": "wilor_mini"}   # what the hub runs
 SETTINGS = ("artly.ai", "AAC Hand Demo")       # QSettings organisation / application (kept: the saved choices live here)
+# WiLoR on the GPU (Dev Mode, remembered): fast mode = 16-bit numbers (half precision); WiLoR's own code also skips 5 of
+# the 32 blocks of its backbone (its demo's --fast). Full precision = 32-bit, the whole model (WiLoR's default). The
+# CPU always runs full precision.
+WILOR_FAST_TEXT = {"wilor": "fast mode: half precision, 5 of 32 backbone layers skipped",
+                   "wilor_mini": "fast mode: half precision"}
 # Per source (what the hub and the glove workers run: "glove", "camera" = MediaPipe, "wilor"): the note while
 # searching, the note when nothing is found, connect / disconnect labels.
 SOURCE_TEXT = {
@@ -589,6 +594,7 @@ class MainPage(QWidget):
         # Dev Mode: the torque demo's fingertip-distance safety stop (on unless turned off there; remembered)
         self.tip_stop = str(self.settings.value("torque_demo_tip_stop", "true")).lower() != "false"
         self.friction_fine = str(self.settings.value("friction_calibration_fine", "false")).lower() == "true"
+        self.wilor_fast = str(self.settings.value("wilor_fast", "true")).lower() != "false"   # Dev Mode
         corner = QHBoxLayout()
         corner.setContentsMargins(0, 0, 0, 0)
         corner.setSpacing(14)
@@ -662,7 +668,7 @@ class MainPage(QWidget):
         link.stopped.connect(lambda code, link=link: self._link_stopped(link, code))
         self.snapshot, self.link_error = None, None
         self.disconnecting = dict.fromkeys(SIDES, False)
-        link.start(self.source, self.fake_sides, checkpoints=self._pin_choice())
+        link.start(self.source, self.fake_sides, checkpoints=self._pin_choice(), wilor_fast=self.wilor_fast)
         for side in SIDES:
             if not self.used(side):
                 link.send(cmd="disconnect", side=side)           # queued until the service is up
@@ -706,8 +712,7 @@ class MainPage(QWidget):
         if not compute:
             return f"{name} is running (it did not say whether on the GPU or the CPU; see the log).", "info"
         if compute.get("device") == "cuda":
-            mode = "fast mode, half precision" if compute.get("fast") else "full precision"
-            return f"{name} is running on the GPU: {compute.get('name') or 'NVIDIA GPU'} ({mode}).", "ok"
+            return f"{name} is running on the GPU: {compute.get('name') or 'NVIDIA GPU'} ({WILOR_FAST_TEXT[self.pipeline] if compute.get('fast') else 'full precision: 32-bit, the whole model'}).", "ok"
         return (f"{name} is running on the CPU: {compute.get('reason') or 'no GPU'}. It is slow there, far below the "
                 f"camera's 30 fps; MediaPipe is the better choice on this computer."), "warning"
 
@@ -763,6 +768,19 @@ class MainPage(QWidget):
         self.tip_stop = bool(on)
         self.settings.setValue("torque_demo_tip_stop", "true" if on else "false")
         print(f"[gui] torque demo fingertip-distance safety stop: {'on' if on else 'OFF'}", flush=True)
+
+    def set_wilor_fast(self, on):
+        """Dev Mode: WiLoR / WiLoR-mini on the GPU in fast mode or full precision (remembered). Restarts the camera when
+        a WiLoR pipeline runs now."""
+        on = bool(on)
+        if on == self.wilor_fast:
+            return
+        self.wilor_fast = on
+        self.settings.setValue("wilor_fast", "true" if on else "false")
+        print(f"[gui] WiLoR on the GPU: {'fast mode' if on else 'full precision'}", flush=True)
+        if self.source in ("wilor", "wilor_mini"):
+            self._restart_tracking()
+        self._show_compute_notice()
 
     def set_friction_fine(self, on):
         """Dev Mode: Calibrate friction runs the fine calibration (friction_calibrate.py --fine), from its next start."""
@@ -885,6 +903,11 @@ class MainPage(QWidget):
         self._show_compute_notice()
         if self.source == before:                               # e.g. a new pipeline chosen in glove mode
             return
+        self._restart_tracking()
+
+    def _restart_tracking(self):
+        """The tracking service again, on the current source and settings (both sides disconnect)."""
+        mode, pipeline = self.mode, self.pipeline
         for panel in self.panels.values():                       # no pose left over from the other source
             panel.view.pose([0.0] * 16)
             panel.view.show_skeleton(None)
@@ -1416,7 +1439,7 @@ class MainWindow(QMainWindow):
         page = DevPage(WindowButtons(self), PIPELINES, self.page.pipeline, self.page.adapters, defaults, list_adapters,
                        tip_stop=self.page.tip_stop, pins=self.page.pins, list_runs=list_runs,
                        gains=self.page.gains, gain_overrides=self.page.gain_overrides,
-                       friction_fine=self.page.friction_fine)
+                       friction_fine=self.page.friction_fine, wilor_fast=self.page.wilor_fast)
         page.setAutoFillBackground(True)
         page.setStyleSheet(f"background: {BACKGROUND.name()};")
         page.back.connect(self.show_main)
@@ -1424,6 +1447,7 @@ class MainWindow(QMainWindow):
         page.adapter_changed.connect(self.page.set_adapter)
         page.tip_stop_changed.connect(self.page.set_tip_stop)
         page.friction_fine_changed.connect(self.page.set_friction_fine)
+        page.wilor_fast_changed.connect(self.page.set_wilor_fast)
         page.save_requested.connect(self.page.save_adapters)
         page.checkpoint_changed.connect(self.page.set_checkpoint)
         page.checkpoints_save_requested.connect(self.page.save_checkpoints)

@@ -68,8 +68,9 @@ class GloveHub(QThread):
     failed = pyqtSignal(str)      # the SDK could not be started or stopped working
     connected = pyqtSignal()      # the source is up (the search itself starts now)
 
-    def __init__(self, parent=None, mode="glove"):
+    def __init__(self, parent=None, mode="glove", wilor_fast=True):
         super().__init__(parent)
+        self.wilor_fast = bool(wilor_fast)               # WiLoR's fast mode on the GPU (Dev Mode)
         self.mode = mode
         self._stop = threading.Event()
         self._lock = threading.Lock()
@@ -111,7 +112,7 @@ class GloveHub(QThread):
             source = load_camera_source(SimpleNamespace(), list(SIDES))   # no SDK: init / shut down do nothing
         elif self.mode in ("wilor", "wilor_mini"):
             from teleop.manus.wilor.wilor_source import load_wilor_source
-            source = load_wilor_source(list(SIDES), tracker=self.mode)
+            source = load_wilor_source(list(SIDES), tracker=self.mode, fast=self.wilor_fast)
         else:
             from teleop.manus.tools.skeleton_source import load_source
             source = load_source()

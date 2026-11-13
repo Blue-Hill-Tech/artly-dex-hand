@@ -63,8 +63,9 @@ class TrackingService(QObject):
 
     changed = pyqtSignal()        # something in the snapshot changed (the publisher may send one early)
 
-    def __init__(self, source, parent=None):
+    def __init__(self, source, parent=None, wilor_fast=True):
         super().__init__(parent)
+        self.wilor_fast = bool(wilor_fast)                       # WiLoR on the GPU: fast mode (Dev Mode) or full precision
         if source not in SOURCES:
             raise ValueError(f"source must be one of {SOURCES}")
         self.source = source
@@ -86,7 +87,7 @@ class TrackingService(QObject):
     # --- the search ---------------------------------------------------------------------------------------------
     def start(self):
         from glove_hub import GloveHub
-        hub = self.hub = GloveHub(self, mode=self.source)
+        hub = self.hub = GloveHub(self, mode=self.source, wilor_fast=self.wilor_fast)
         hub.gloves.connect(lambda found, hub=hub: self._gloves_changed(hub, found))
         hub.failed.connect(lambda message, hub=hub: self._search_failed(hub, message))
         hub.connected.connect(lambda hub=hub: self._source_up(hub))
@@ -139,7 +140,7 @@ class TrackingService(QObject):
     def _start_side(self, side):
         from glove_worker import GloveWorker
         hub = self.hub if self.hub is not None and self.hub.isRunning() else None
-        worker = GloveWorker(side, self, hub=hub, mode=self.source)
+        worker = GloveWorker(side, self, hub=hub, mode=self.source, wilor_fast=self.wilor_fast)
         worker.want_skeleton = self.want_skeleton[side]
         state = self.sides[side] = self._blank_side()
         state["connected"] = True
@@ -278,6 +279,9 @@ def parse_args(argv=None):
     parser.add_argument("--checkpoints", default=None,
                         help='JSON {"glove/Right": "<run>" or null, ...}: the GeoRT runs to use instead of the saved '
                              'selection (the GUI\'s Dev Mode choice; null = the newest run)')
+    parser.add_argument("--wilor-full", action="store_true",
+                        help="WiLoR / WiLoR-mini on the GPU in full precision (32-bit, the whole model) instead of its "
+                             "fast mode (the GUI's Dev Mode choice)")
     parser.add_argument("--fake-sides", default=None,
                         help="comma-separated sides tracked by a synthetic glove instead of hardware (tests, demos)")
     return parser.parse_args(argv)
@@ -304,7 +308,9 @@ def main(argv=None):
     state.bind(args.state)
     commands = context.socket(zmq.PULL)
     commands.bind(args.commands)
-    service = TrackingService(args.source)
+    service = TrackingService(args.source, wilor_fast=not args.wilor_full)
+    if args.source in ("wilor", "wilor_mini"):
+        print(f"[tracking] WiLoR on the GPU: {'full precision' if args.wilor_full else 'fast mode'}", flush=True)
 
     def publish():
         state.send_string(json.dumps(service.snapshot()))
